@@ -2,25 +2,29 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using WordMakerDashboard.Models;
 
 namespace WordMakerDashboard.Services
 {
     public class DictionaryService
     {
-        public static Dictionary<string, string> LoadDictionary(string languageCode)
+        /// <summary>
+        /// Loads a dictionary from a JSON file and deserializes it.
+        /// </summary>
+        /// <param name="filePath">The path of the file on the local computer.</param>
+        /// <returns>A dictionary of string and Word containing all info from the words.</returns>
+        public static Dictionary<string, Word> LoadDictionary(string filePath)
         {
-            var filePath = "C:\\Users\\guilh\\Downloads\\dictionary.json";
-
             try
             {
                 if (File.Exists(filePath))
                 {
                     string jsonContent = File.ReadAllText(filePath);
-                    return JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonContent);
+                    return JsonConvert.DeserializeObject<Dictionary<string, Word>>(jsonContent);
                 }
                 else
                 {
-                    Console.WriteLine($"Dictionary file '{languageCode}.json' not found.");
+                    Console.WriteLine($"Dictionary JSON file '{filePath}' not found.");
                     return null;
                 }
             }

@@ -105,8 +105,7 @@ namespace WordMakerDashboard
 
             if (resp == DialogResult.Yes)
             {
-                dbOperations.DeleteFromDatabaseTable("tbDefinitions", "WordID", Convert.ToInt32(txtWordId.Text));
-                dbOperations.DeleteFromDatabaseTable("tbWords", "WordID", Convert.ToInt32(txtWordId.Text));
+                dbOperations.DeleteFromDatabaseTable("tblWords", "WordID", Convert.ToInt32(txtWordId.Text));
             }
 
             MessageBox.Show("Entry deleted successfully!");
@@ -136,11 +135,11 @@ namespace WordMakerDashboard
                 };
 
                 string updateQuery = @"UPDATE tblWords
-                                           SET 
+                                           SET
                                                Word = @Word,
                                                WordDefinition = @WordDefinition,
                                                WordExample = @WordExample
-                                           WHERE WordId = @WordId 
+                                           WHERE WordId = @WordId
                                            AND LanguageId = (SELECT LanguageId FROM tbLanguages WHERE LanguageName = @LanguageName);";
 
                 try
@@ -158,8 +157,8 @@ namespace WordMakerDashboard
 
         private void LoadDatabaseView()
         {
-            var selectString = $@"SELECT WordId, Word, WordDefinition, WordExample, LanguageName, LanguageCode 
-                                  FROM tblWords w JOIN tbLanguages l ON w.LanguageId = l.LanguageId 
+            var selectString = $@"SELECT WordId, Word, WordDefinition, WordExample, LanguageName, LanguageCode
+                                  FROM tblWords w JOIN tbLanguages l ON w.LanguageId = l.LanguageId
                                   WHERE l.LanguageName =  N'{comboBox_Languages.Text}'";
 
             bindingSource.DataSource = dbOperations.SelectAllFromDatabase("tblWords", selectString);
@@ -174,7 +173,6 @@ namespace WordMakerDashboard
             txtWord.Clear();
             txtWordId.Clear();
             txtFilterWord.Clear();
-            comboBox_Languages.SelectedIndex = -1;
         }
 
         private void HandleEnableAllTextbox(bool enable)

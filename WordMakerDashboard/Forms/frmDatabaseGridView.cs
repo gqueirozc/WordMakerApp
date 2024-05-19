@@ -42,7 +42,7 @@ namespace WordMakerDashboard
 
         private void LoadDatabaseView(string query = "")
         {
-            bindingSource.DataSource = dbOperations.SelectAllFromDatabase(TableName, query);        
+            bindingSource.DataSource = dbOperations.SelectAllFromDatabase(TableName, query);
             dgvDisplay.DataSource = bindingSource;
 
             var i = 0;
@@ -75,8 +75,6 @@ namespace WordMakerDashboard
         {
             if (!IsDictionary)
             {
-                cbLanguages.Visible = false;
-                label1.Visible = false;
                 LoadDatabaseView();
                 return;
             }
@@ -101,7 +99,7 @@ namespace WordMakerDashboard
 
         private void cbLanguages_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var selectString = $@"SELECT * FROM tblWords w JOIN tbLanguages l ON w.LanguageId = l.LanguageId 
+            var selectString = $@"SELECT * FROM tblWords w JOIN tbLanguages l ON w.LanguageId = l.LanguageId
                                   WHERE l.LanguageName =  N'{cbLanguages.Text}'";
             LoadDatabaseView(selectString);
         }

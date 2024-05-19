@@ -3,8 +3,16 @@ using System.Text;
 
 namespace WordMakerDashboard.Services
 {
+    /// <summary>
+    /// Class for cryptographing the passwords.
+    /// </summary>
     internal class CryptographyService
     {
+        /// <summary>
+        /// Converts a string to MD5 hash byte.
+        /// </summary>
+        /// <param name="input">The string to be converted.</param>
+        /// <returns>returns the md5 hash for the string</returns>
         public string ConvertToMd5(string input)
         {
             using (MD5 md5 = MD5.Create())

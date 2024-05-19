@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using WordMakerDashboard.Database;
-using Microsoft.VisualBasic;
-using System.Collections.Generic;
+using WordMakerDashboard.Forms.Dictionaries;
 
 namespace WordMakerDashboard
 {
@@ -22,6 +23,13 @@ namespace WordMakerDashboard
             var word = txtWord.Text;
             var definition = txtDefinition.Text;
             var example = txtExample.Text;
+            var newData = new Dictionary<string, string>
+            {
+                { "Word", txtWord.Text },
+                { "WordDefinition", txtDefinition.Text },
+                { "WordExample", txtExample.Text },
+                { "LanguageName", txtLanguage.Text },
+            };
 
             if (!dbOperations.LanguageExists(languageName))
             {
@@ -30,7 +38,7 @@ namespace WordMakerDashboard
                 {
                     var languageCode = Interaction.InputBox("Please insert the Language Code (e.g. 'en', 'fr'):", "Adding new Language");
 
-                    var query = $@"INSERT INTO tbLanguages (LanguageCode, LanguageName) VALUES 
+                    var query = $@"INSERT INTO tbLanguages (LanguageCode, LanguageName) VALUES
                                 ('{languageCode}', '{languageName}')";
 
                     try
@@ -53,9 +61,20 @@ namespace WordMakerDashboard
 
             if (dbOperations.WordExists(word, languageName, out var wordId))
             {
+                newData.Add("WordId", wordId.ToString());
                 if (PromptForUpdate(word))
                 {
-                    UpdateWord(wordId);
+                    try
+                    {
+                        dbOperations.UpdateWord(newData);
+                        MessageBox.Show("Word updated successfully!");
+                        ClearTextBoxes();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("An error occured while trying to add the data: " + ex.Message);
+                        return;
+                    }
                 }
                 else
                 {
@@ -65,10 +84,9 @@ namespace WordMakerDashboard
             }
             else
             {
-                var query = $@"INSERT INTO tblWords (Word, LanguageId, WordDefinition, WordExample) 
-                                VALUES ('{word}', (SELECT LanguageId FROM tbLanguages WHERE LanguageName = '{languageName}'), '{definition}', '{example}')";
-                try { 
-                    dbOperations.ExecuteQuery(query);
+                try
+                {
+                    dbOperations.InsertWord(newData);
                     MessageBox.Show("Word added successfully!");
                     ClearTextBoxes();
                 }
@@ -80,40 +98,9 @@ namespace WordMakerDashboard
             }
         }
 
-        public bool PromptForUpdate(string word)
+        private bool PromptForUpdate(string word)
         {
             return MessageBox.Show($"The word '{word}' already exists for the language. Do you want to update its values?", "Confirmation", MessageBoxButtons.YesNo) == DialogResult.Yes;
-        }
-
-
-        private void UpdateWord(int wordId)
-        {
-            var newData = new Dictionary<string, string>
-                {
-                    { "Word", txtWord.Text },
-                    { "WordDefinition", txtDefinition.Text },
-                    { "WordExample", txtExample.Text },
-                    { "LanguageName", txtLanguage.Text },
-                    { "WordId", wordId.ToString()}
-                };
-
-            string updateQuery = $@"UPDATE tblWords
-                                           SET Word = @Word,
-                                               WordDefinition = @WordDefinition,
-                                               WordExample = @WordExample
-                                           WHERE WordId = @WordId 
-                                           AND LanguageId = (SELECT LanguageId FROM tbLanguages WHERE LanguageName = @LanguageName);";
-            try
-            {
-                dbOperations.UpdateDatabaseEntry(updateQuery, newData);
-                MessageBox.Show("Data altered successfully!");
-                ClearTextBoxes();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occured while trying to alter the data: " + ex.Message);
-                return;
-            }
         }
 
         private void ClearTextBoxes()
@@ -127,6 +114,18 @@ namespace WordMakerDashboard
         private void tsbConsult_Click(object sender, EventArgs e)
         {
             var form = new frmDatabaseGridView("tblWords", true);
+            form.MdiParent = this.MdiParent;
+            form.Show();
+        }
+
+        private void tsbExit_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void tsbAddJson_Click(object sender, EventArgs e)
+        {
+            var form = new frmRegisterJsonFile();
             form.MdiParent = this.MdiParent;
             form.Show();
         }

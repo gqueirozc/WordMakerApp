@@ -35,7 +35,7 @@ namespace WordMakerDashboard
                 };
 
                 string updateQuery = @"
-                    INSERT INTO tbUsers (UserName, UserPassword, UserEmail, UserLevel, UserPoints) 
+                    INSERT INTO tbUsers (UserName, UserPassword, UserEmail, UserLevel, UserPoints)
                     VALUES (@UserName, @UserPassword, @UserEmail, @UserLevel, @UserPoints)";
                 try
                 {

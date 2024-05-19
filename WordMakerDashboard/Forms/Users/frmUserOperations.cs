@@ -87,7 +87,6 @@ namespace WordMakerDashboard
             }
         }
 
-
         private void tsbAlterar_Click(object sender, EventArgs e)
         {
             btnSave.Visible = true;

@@ -41,10 +41,11 @@ namespace WordMakerDashboard
                 }
 
                 string updateQuery = @"
-                    INSERT INTO tbAdmins (AdminFullName, AdminCorporateEmail, AdminPhoneNumber, AdminPrivilegeLevel, AdminLogin, AdminPassword) 
+                    INSERT INTO tbAdmins (AdminFullName, AdminCorporateEmail, AdminPhoneNumber, AdminPrivilegeLevel, AdminLogin, AdminPassword)
                     VALUES (@AdminFullName, @AdminCorporateEmail, @AdminPhoneNumber, @AdminPrivilegeLevel, @AdminLogin, @AdminPassword)";
-             
-                try {
+
+                try
+                {
                     dbOperations.UpdateDatabaseEntry(updateQuery, newData);
                     MessageBox.Show("Admin added successfully!");
                     ClearTextBoxes();

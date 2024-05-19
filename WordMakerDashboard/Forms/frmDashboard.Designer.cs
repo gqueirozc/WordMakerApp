@@ -40,8 +40,6 @@
             this.arquivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newDictionaryEntryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.sobreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -139,28 +137,13 @@
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.arquivoToolStripMenuItem,
-            this.movimentoToolStripMenuItem,
-            this.sobreToolStripMenuItem});
+            this.movimentoToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
             this.menuStrip1.Size = new System.Drawing.Size(800, 24);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
-            // 
-            // sobreToolStripMenuItem
-            // 
-            this.sobreToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aboutToolStripMenuItem1});
-            this.sobreToolStripMenuItem.Name = "sobreToolStripMenuItem";
-            this.sobreToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.sobreToolStripMenuItem.Text = "Help";
-            // 
-            // aboutToolStripMenuItem1
-            // 
-            this.aboutToolStripMenuItem1.Name = "aboutToolStripMenuItem1";
-            this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(122, 22);
-            this.aboutToolStripMenuItem1.Text = "About us";
             // 
             // frmDashboard
             // 
@@ -195,8 +178,6 @@
         private System.Windows.Forms.ToolStripMenuItem arquivoToolStripMenuItem;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem newDictionaryEntryToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem sobreToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem administratorsToolStripMenuItem;
     }
 }
