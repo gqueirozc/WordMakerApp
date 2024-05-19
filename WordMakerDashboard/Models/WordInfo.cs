@@ -3,8 +3,13 @@
     /// <summary>
     /// Represents a word and its attributes.
     /// </summary>
-    public class Word
+    public class WordInfo
     {
+        /// <summary>
+        /// Represents the word.
+        /// </summary>
+        public string Word { get; set; }
+
         /// <summary>
         /// Represents the definition of the word.
         /// </summary>

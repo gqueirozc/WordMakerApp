@@ -144,8 +144,8 @@
     <Compile Include="Forms\Users\frmUserOperations.Designer.cs">
       <DependentUpon>frmUserOperations.cs</DependentUpon>
     </Compile>
-    <Compile Include="Models\Word.cs" />
-    <Compile Include="Services\DatabaseOperations.cs" />
+    <Compile Include="Models\WordInfo.cs" />
+    <Compile Include="Services\DatabaseService.cs" />
     <Compile Include="Forms\frmDashboard.cs">
       <SubType>Form</SubType>
     </Compile>

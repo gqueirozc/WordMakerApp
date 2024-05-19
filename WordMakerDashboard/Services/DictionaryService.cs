@@ -13,14 +13,14 @@ namespace WordMakerDashboard.Services
         /// </summary>
         /// <param name="filePath">The path of the file on the local computer.</param>
         /// <returns>A dictionary of string and Word containing all info from the words.</returns>
-        public static Dictionary<string, Word> LoadDictionary(string filePath)
+        public static List<WordInfo> LoadDictionary(string filePath)
         {
             try
             {
                 if (File.Exists(filePath))
                 {
                     string jsonContent = File.ReadAllText(filePath);
-                    return JsonConvert.DeserializeObject<Dictionary<string, Word>>(jsonContent);
+                    return JsonConvert.DeserializeObject<List<WordInfo>>(jsonContent);
                 }
                 else
                 {

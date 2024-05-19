@@ -1,26 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using WordMakerDashboard.Database;
 using WordMakerDashboard.Services;
 
 namespace WordMakerDashboard.Forms
 {
     public partial class frmLogin : Form
     {
-        private DatabaseOperations dbOperations;
+        private DatabaseService dbOperations;
         private CryptographyService cryptographyService;
 
         public frmLogin()
         {
             InitializeComponent();
-            dbOperations = new DatabaseOperations();
+            dbOperations = new DatabaseService();
             cryptographyService = new CryptographyService();
         }
 
@@ -41,7 +33,8 @@ namespace WordMakerDashboard.Forms
                 var email = dataTable.Rows[0]["AdminCorporateEmail"].ToString();
                 var id = dataTable.Rows[0]["AdminId"].ToString();
 
-                if (dataBasePassword == cryptographyService.ConvertToMd5(password)){
+                if (dataBasePassword == cryptographyService.ConvertToMd5(password))
+                {
                     var form = new frmDashboard(privilegeLevel, fullName, email, id, login);
                     this.Hide();
                     form.Show();

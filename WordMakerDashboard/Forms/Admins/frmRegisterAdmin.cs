@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using WordMakerDashboard.Database;
 using WordMakerDashboard.Services;
 
 namespace WordMakerDashboard
 {
     public partial class frmRegisterAdmin : Form
     {
-        private readonly DatabaseOperations dbOperations;
+        private readonly DatabaseService dbOperations;
         private readonly CryptographyService cryptographyService;
 
         public frmRegisterAdmin()
         {
             InitializeComponent();
-            dbOperations = new DatabaseOperations();
+            dbOperations = new DatabaseService();
             cryptographyService = new CryptographyService();
         }
 

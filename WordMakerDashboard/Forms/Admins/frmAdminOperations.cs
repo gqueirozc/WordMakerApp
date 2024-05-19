@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using WordMakerDashboard.Database;
 using WordMakerDashboard.Services;
 
 namespace WordMakerDashboard
@@ -9,13 +8,13 @@ namespace WordMakerDashboard
     public partial class frmAdminOperations : Form
     {
         private readonly BindingSource bindingSource;
-        private readonly DatabaseOperations dbOperations;
+        private readonly DatabaseService dbOperations;
         private readonly CryptographyService cryptographyService;
 
         public frmAdminOperations()
         {
             InitializeComponent();
-            dbOperations = new DatabaseOperations();
+            dbOperations = new DatabaseService();
             bindingSource = new BindingSource();
             cryptographyService = new CryptographyService();
             btnDelete.Visible = false;

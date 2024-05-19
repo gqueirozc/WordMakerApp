@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
-using WordMakerDashboard.Database;
+using WordMakerDashboard.Services;
 
 namespace WordMakerDashboard
 {
     public partial class frmDictionaryOperations : Form
     {
-        private DatabaseOperations dbOperations;
+        private DatabaseService dbOperations;
         private BindingSource bindingSource;
 
         public frmDictionaryOperations()
         {
             InitializeComponent();
             bindingSource = new BindingSource();
-            dbOperations = new DatabaseOperations();
+            dbOperations = new DatabaseService();
             btnDelete.Visible = false;
             btnSave.Visible = false;
         }

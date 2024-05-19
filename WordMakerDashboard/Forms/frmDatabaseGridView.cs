@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Data;
 using System.Windows.Forms;
-using WordMakerDashboard.Database;
+using WordMakerDashboard.Services;
 
 namespace WordMakerDashboard
 {
     public partial class frmDatabaseGridView : Form
     {
         private readonly BindingSource bindingSource;
-        private readonly DatabaseOperations dbOperations;
+        private readonly DatabaseService dbOperations;
         private readonly string TableName;
         private readonly bool IsDictionary;
 
         public frmDatabaseGridView(string tableName, bool isDictionary = false)
         {
             InitializeComponent();
-            dbOperations = new DatabaseOperations();
+            dbOperations = new DatabaseService();
             bindingSource = new BindingSource();
             TableName = tableName;
             IsDictionary = isDictionary;
@@ -65,9 +65,15 @@ namespace WordMakerDashboard
             }
             else
             {
-                string columnName = cbFilters.Text;
-                string filterExpression = $"[{columnName}] LIKE '%{filterText}%'";
-                bindingSource.Filter = filterExpression;
+                try {
+                    string columnName = cbFilters.Text;
+                    string filterExpression = $"[{columnName}] LIKE '%{filterText}%'";
+                    bindingSource.Filter = filterExpression;
+                } catch (Exception ex)
+                {
+                    MessageBox.Show("Select a filter to proceeed.");
+                    return;
+                }
             }
         }
 

@@ -2,7 +2,6 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using WordMakerDashboard.Database;
 using WordMakerDashboard.Services;
 
 namespace WordMakerDashboard.Forms.Dictionaries
@@ -10,12 +9,12 @@ namespace WordMakerDashboard.Forms.Dictionaries
     public partial class frmRegisterJsonFile : Form
     {
         private BackgroundWorker progressWorker;
-        private DatabaseOperations dbOperations;
+        private DatabaseService dbOperations;
 
         public frmRegisterJsonFile()
         {
             InitializeComponent();
-            dbOperations = new DatabaseOperations();
+            dbOperations = new DatabaseService();
 
             progressBarGlobal.Visible = false;
             label3.Visible = false;

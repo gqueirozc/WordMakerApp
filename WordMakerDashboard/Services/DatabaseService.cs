@@ -1,18 +1,20 @@
-﻿using System;
+﻿using Npgsql;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
-using Npgsql;
 using WordMakerDashboard.Models;
 
-namespace WordMakerDashboard.Database
+namespace WordMakerDashboard.Services
 {
     /// <summary>
     /// Contains all operations related to the POSTGRE ElephantSQL database used to storage all data.
     /// </summary>
-    public class DatabaseOperations
+    public class DatabaseService
     {
         public static string connectionString = "Host=isabelle.db.elephantsql.com;Username=zrmfzafr;Password=2F0bg6YYX51w_NRMFvO8Lhw3PrMBpW0s;Database=zrmfzafr";
 
@@ -26,9 +28,9 @@ namespace WordMakerDashboard.Database
         {
             if (strSelect == "") strSelect = $"SELECT * FROM {tableName};";
             var dataTable = new DataTable();
-            using (NpgsqlConnection oConnection = new NpgsqlConnection(connectionString))
+            using (var oConnection = new NpgsqlConnection(connectionString))
             {
-                using (NpgsqlCommand oCommand = new NpgsqlCommand(strSelect, oConnection))
+                using (var oCommand = new NpgsqlCommand(strSelect, oConnection))
                 {
                     var dataAdapter = new NpgsqlDataAdapter(oCommand);
                     oConnection.Open();
@@ -48,9 +50,9 @@ namespace WordMakerDashboard.Database
         public void DeleteFromDatabaseTable(string tableName, string idFieldName, int deletedId)
         {
             var strDELETE = $"DELETE FROM {tableName} WHERE {idFieldName} = @{idFieldName}";
-            using (NpgsqlConnection oConnection = new NpgsqlConnection(connectionString))
+            using (var oConnection = new NpgsqlConnection(connectionString))
             {
-                using (NpgsqlCommand oCommand = new NpgsqlCommand(strDELETE, oConnection))
+                using (var oCommand = new NpgsqlCommand(strDELETE, oConnection))
                 {
                     oCommand.Parameters.AddWithValue($"@{idFieldName}", deletedId);
                     oConnection.Open();
@@ -67,11 +69,11 @@ namespace WordMakerDashboard.Database
         /// <param name="updateValues">Dictionary containing the key as the placeholder name, and the value as its actual value to be updated.</param>
         public void UpdateDatabaseEntry(string updateQuery, Dictionary<string, string> updateValues)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+            using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
-                using (NpgsqlCommand updateCommand = new NpgsqlCommand(updateQuery, connection))
+                using (var updateCommand = new NpgsqlCommand(updateQuery, connection))
                 {
                     foreach (var item in updateValues)
                     {
@@ -89,11 +91,11 @@ namespace WordMakerDashboard.Database
         /// <param name="query">string of the full query to be executed.</param>
         public void ExecuteQuery(string query)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+            using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
-                using (NpgsqlCommand updateCommand = new NpgsqlCommand(query, connection))
+                using (var updateCommand = new NpgsqlCommand(query, connection))
                 {
                     updateCommand.ExecuteNonQuery();
                 }
@@ -111,9 +113,9 @@ namespace WordMakerDashboard.Database
             bool exists = false;
             string query = $"SELECT COUNT(*) FROM tbLanguages WHERE LanguageName = '{languageName}'";
 
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+            using (var connection = new NpgsqlConnection(connectionString))
             {
-                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                using (var command = new NpgsqlCommand(query, connection))
                 {
                     connection.Open();
                     var result = command.ExecuteScalar();
@@ -145,11 +147,11 @@ namespace WordMakerDashboard.Database
                            $"INNER JOIN tbLanguages l ON w.LanguageId = l.LanguageId " +
                            $"WHERE w.Word = '{word}' AND l.LanguageName = '{languageName}'";
 
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+            using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
-                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                using (var command = new NpgsqlCommand(query, connection))
                 {
                     var result = command.ExecuteScalar();
                     if (result != null && int.TryParse(result.ToString(), out int count))
@@ -165,7 +167,7 @@ namespace WordMakerDashboard.Database
                                          $"INNER JOIN tbLanguages l ON w.LanguageId = l.LanguageId " +
                                          $"WHERE w.Word = '{word}' AND l.LanguageName = '{languageName}'";
 
-                    using (NpgsqlCommand command = new NpgsqlCommand(queryWordId, connection))
+                    using (var command = new NpgsqlCommand(queryWordId, connection))
                     {
                         object result = command.ExecuteScalar();
                         if (result != null)
@@ -186,30 +188,28 @@ namespace WordMakerDashboard.Database
         /// <param name="wordDictionary">A deserialized dictionary from a JSON file containing the word's info.</param>
         /// <param name="languageName">The language of the dictionary for the words to be added to.</param>
         /// <param name="bgWorker">An instance of the background worker to update the progress during its process.</param>
-        public void PopulateDatabaseWithNewDictionary(Dictionary<string, Word> wordDictionary, string languageName, BackgroundWorker bgWorker)
+        public void PopulateDatabaseWithNewDictionary(List<WordInfo> wordDictionary, string languageName, BackgroundWorker bgWorker)
         {
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+            using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
 
                 var wordsToInsertOrUpdate = wordDictionary.ToList();
 
-                wordsToInsertOrUpdate.Sort((x, y) => string.Compare(x.Key, y.Key, StringComparison.Ordinal));
-                var entriesToInsert = wordsToInsertOrUpdate.Where(entry => !ContainsInvalidCharacters(entry.Key));
+                wordsToInsertOrUpdate.Sort((x, y) => string.Compare(x.Word, y.Word, StringComparison.Ordinal));
+                var entriesToInsert = wordsToInsertOrUpdate.Where(entry => !ContainsInvalidCharacters(entry.Word));
 
                 var currentIteration = 0;
                 foreach (var entry in entriesToInsert)
                 {
-                    var word = entry.Key;
-                    var wordData = entry.Value;
-
+                    var word = entry.Word;
                     bool wordExists = WordExists(word, languageName, out var wordId);
 
                     var newData = new Dictionary<string, string>
                     {
                         { "Word", word },
-                        { "WordDefinition", wordData.Definition },
-                        { "WordExample", wordData.Example },
+                        { "WordDefinition", entry.Definition },
+                        { "WordExample", entry.Example },
                         { "LanguageName", languageName },
                         { "WordId", wordId.ToString()}
                     };
@@ -248,7 +248,7 @@ namespace WordMakerDashboard.Database
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occured while trying to alter the data: " + ex.Message);
+                Console.WriteLine(ex.ToString());
                 return;
             }
         }
@@ -267,9 +267,94 @@ namespace WordMakerDashboard.Database
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occured while trying to alter the data: " + ex.Message);
+                Console.WriteLine(ex.ToString());
                 return;
             }
+        }
+
+        /// <summary>
+        /// Gets a random word based on length.
+        /// </summary>
+        /// <param name="wordLength">The maximum word length.</param>
+        /// <param name="language">The language of the word.</param>
+        /// <returns>A random word from database</returns>
+        public static string GetRandomWord(int wordLength, string language)
+        {
+            var word = "";
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+            {
+                connection.Open();
+                var query = $"SELECT Word FROM tblWords WHERE LanguageId = (SELECT LanguageId FROM tbLanguages WHERE LanguageName = N'{language}') AND LENGTH(Word) = {wordLength} ORDER BY RANDOM() LIMIT 1";
+                var command = new NpgsqlCommand(query, connection);
+                var reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    word = reader.GetString(0);
+                }
+                reader.Close();
+            }
+            return word;
+        }
+
+        /// <summary>
+        /// Gets the letters from a word. 
+        /// </summary>
+        /// <param name="word">The word to be analized.</param>
+        /// <returns>A list with all the chars from the word.</returns>
+        public static List<char> GetLetters(string word)
+        {
+            var lettersSet = new HashSet<char>();
+            foreach (var letter in word)
+            {
+                lettersSet.Add(letter);
+            }
+            return new List<char>(lettersSet);
+        }
+
+        /// <summary>
+        /// Gets random words according to the letters and max length
+        /// </summary>
+        /// <param name="wordMaxLength">The max length of the words.</param>
+        /// <param name="letters">The letters the word can contain.</param>
+        /// <param name="numberOfEntries">The amount of entries that will be obtained.</param>
+        /// <param name="language">The language of the words.</param>
+        /// <returns>A list of wordinfo that contains name, definition and example of words.</returns>
+        public static List<WordInfo> GetRandomWords(int wordMaxLength, List<char> letters, int numberOfEntries, string language)
+        {
+            var matchingWords = new List<WordInfo>();
+            using (var connection = new NpgsqlConnection(connectionString))
+            {
+                connection.Open();
+                var sb = new StringBuilder();
+                foreach (var letter in letters)
+                {
+                    sb.Append($"POSITION('{letter}' IN Word) > 0 AND ");
+                }
+                var conditions = sb.ToString().TrimEnd("AND ".ToCharArray());
+
+                var query = $@"SELECT Word, WordDefinition, WordExample 
+                          FROM tblWords 
+                          WHERE LanguageId = (SELECT LanguageId FROM tbLanguages WHERE LanguageName = '{language}') 
+                          AND LENGTH(Word) <= {wordMaxLength} AND {conditions}";
+
+                var command = new NpgsqlCommand(query, connection);
+                var reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var word = reader.GetString(0);
+                    var definition = reader.IsDBNull(1) ? null : reader.GetString(1);
+                    var example = reader.IsDBNull(2) ? null : reader.GetString(2);
+
+                    matchingWords.Add(new WordInfo { Word = word, Definition = definition, Example = example });
+                }
+                reader.Close();
+            }
+
+            var random = new Random();
+            matchingWords = matchingWords.OrderBy(x => random.Next()).ToList();
+
+            return matchingWords.Take(numberOfEntries).ToList();
         }
 
         private static bool ContainsInvalidCharacters(string word)
@@ -280,20 +365,6 @@ namespace WordMakerDashboard.Database
         private static bool ContainsDigit(string word)
         {
             return word.Any(char.IsDigit) || word.Length < 3;
-        }
-
-        private static void Shuffle<T>(List<T> list)
-        {
-            Random rng = new Random();
-            int n = list.Count;
-            while (n > 1)
-            {
-                n--;
-                int k = rng.Next(n + 1);
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
-            }
         }
     }
 }

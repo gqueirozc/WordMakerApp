@@ -2,19 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using WordMakerDashboard.Database;
 using WordMakerDashboard.Forms.Dictionaries;
+using WordMakerDashboard.Services;
 
 namespace WordMakerDashboard
 {
     public partial class frmRegisterDictionaryOrWord : Form
     {
-        private DatabaseOperations dbOperations;
+        private DatabaseService dbOperations;
 
         public frmRegisterDictionaryOrWord()
         {
             InitializeComponent();
-            dbOperations = new DatabaseOperations();
+            dbOperations = new DatabaseService();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
