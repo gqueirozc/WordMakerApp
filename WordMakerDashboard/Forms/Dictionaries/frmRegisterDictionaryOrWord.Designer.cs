@@ -59,9 +59,10 @@
             // 
             // tsbConsult
             // 
+            this.tsbConsult.Image = global::WordMakerDashboard.Properties.Resources.add;
             this.tsbConsult.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbConsult.Name = "tsbConsult";
-            this.tsbConsult.Size = new System.Drawing.Size(103, 24);
+            this.tsbConsult.Size = new System.Drawing.Size(123, 24);
             this.tsbConsult.Text = "Consult Database";
             this.tsbConsult.Click += new System.EventHandler(this.tsbConsult_Click);
             // 
@@ -164,9 +165,10 @@
             // 
             // tsbAddJson
             // 
+            this.tsbAddJson.Image = global::WordMakerDashboard.Properties.Resources.add;
             this.tsbAddJson.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAddJson.Name = "tsbAddJson";
-            this.tsbAddJson.Size = new System.Drawing.Size(82, 24);
+            this.tsbAddJson.Size = new System.Drawing.Size(102, 24);
             this.tsbAddJson.Text = "Add via JSON";
             this.tsbAddJson.Click += new System.EventHandler(this.tsbAddJson_Click);
             // 

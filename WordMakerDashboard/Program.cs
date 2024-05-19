@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using WordMakerDashboard.Forms;
 
 namespace WordMakerDashboard
 {
@@ -13,7 +14,7 @@ namespace WordMakerDashboard
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmDashboard(1));
+            Application.Run(new frmLogin());
         }
     }
 }

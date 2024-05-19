@@ -45,7 +45,7 @@
             this.btnSelectFile.Location = new System.Drawing.Point(12, 236);
             this.btnSelectFile.Name = "btnSelectFile";
             this.btnSelectFile.Size = new System.Drawing.Size(90, 34);
-            this.btnSelectFile.TabIndex = 0;
+            this.btnSelectFile.TabIndex = 1;
             this.btnSelectFile.Text = "Select File";
             this.btnSelectFile.UseVisualStyleBackColor = true;
             this.btnSelectFile.Click += new System.EventHandler(this.btnSelectFile_Click);
@@ -56,7 +56,7 @@
             this.txtFilePath.Location = new System.Drawing.Point(108, 250);
             this.txtFilePath.Name = "txtFilePath";
             this.txtFilePath.Size = new System.Drawing.Size(488, 20);
-            this.txtFilePath.TabIndex = 1;
+            this.txtFilePath.TabIndex = 2;
             // 
             // label1
             // 
@@ -91,7 +91,7 @@
             this.txtLanguage.Location = new System.Drawing.Point(79, 206);
             this.txtLanguage.Name = "txtLanguage";
             this.txtLanguage.Size = new System.Drawing.Size(117, 20);
-            this.txtLanguage.TabIndex = 5;
+            this.txtLanguage.TabIndex = 0;
             // 
             // progressBarGlobal
             // 

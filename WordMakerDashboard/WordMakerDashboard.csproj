@@ -132,6 +132,12 @@
     <Compile Include="Forms\Dictionaries\frmRegisterDictionaryOrWord.Designer.cs">
       <DependentUpon>frmRegisterDictionaryOrWord.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmLogin.Designer.cs">
+      <DependentUpon>frmLogin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Users\frmUserOperations.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -179,6 +185,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Dictionaries\frmRegisterDictionaryOrWord.resx">
       <DependentUpon>frmRegisterDictionaryOrWord.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmLogin.resx">
+      <DependentUpon>frmLogin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Users\frmUserOperations.resx">
       <DependentUpon>frmUserOperations.cs</DependentUpon>
