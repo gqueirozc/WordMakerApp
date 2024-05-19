@@ -175,9 +175,11 @@
             // 
             this.dgvDados.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvDados.Location = new System.Drawing.Point(12, 231);
+            this.dgvDados.MultiSelect = false;
             this.dgvDados.Name = "dgvDados";
             this.dgvDados.ReadOnly = true;
             this.dgvDados.RowHeadersWidth = 51;
+            this.dgvDados.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvDados.Size = new System.Drawing.Size(784, 247);
             this.dgvDados.TabIndex = 11;
             this.dgvDados.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvDados_CellEnter);
@@ -228,9 +230,6 @@
             this.comboBox_Languages.DisplayMember = "English";
             this.comboBox_Languages.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Languages.FormattingEnabled = true;
-            this.comboBox_Languages.Items.AddRange(new object[] {
-            "English",
-            "Portuguese"});
             this.comboBox_Languages.Location = new System.Drawing.Point(111, 41);
             this.comboBox_Languages.Name = "comboBox_Languages";
             this.comboBox_Languages.Size = new System.Drawing.Size(121, 21);

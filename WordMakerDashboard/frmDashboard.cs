@@ -8,7 +8,7 @@ namespace WordMakerDashboard
         public frmDashboard(int privilegeLevel)
         {
             InitializeComponent();
-            if(privilegeLevel != 1)
+            if (privilegeLevel != 1)
             {
                 administratorsToolStripMenuItem.Enabled = false;
                 newAdminToolStripMenuItem.Enabled = false;
@@ -53,6 +53,13 @@ namespace WordMakerDashboard
         private void newUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var form = new frmRegisterUser();
+            form.MdiParent = this;
+            form.Show();
+        }
+
+        private void newDictionaryEntryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var form = new frmRegisterDictionaryOrWord();
             form.MdiParent = this;
             form.Show();
         }

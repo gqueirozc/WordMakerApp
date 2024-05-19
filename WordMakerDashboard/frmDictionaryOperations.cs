@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Windows.Forms;
 using WordMakerDashboard.Database;
 
@@ -23,6 +24,7 @@ namespace WordMakerDashboard
         {
             ClearTextBoxes();
             LoadDatabaseView();
+            PopulateComboBoxWithLanguages();
         }
 
         private void btnClear_Click(object sender, EventArgs e)
@@ -60,10 +62,10 @@ namespace WordMakerDashboard
 
         private void dgvDados_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
-            txtWordId.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[1].Value.ToString();
-            txtWord.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[2].Value.ToString();
-            txtDefinition.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[3].Value.ToString();
-            txtExample.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[4].Value.ToString();
+            txtWordId.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[0].Value.ToString();
+            txtWord.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[1].Value.ToString();
+            txtDefinition.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[2].Value.ToString();
+            txtExample.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[3].Value.ToString();
         }
 
         private void tsbDelete_Click(object sender, EventArgs e)
@@ -113,7 +115,7 @@ namespace WordMakerDashboard
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if(txtWordId.Text.Length == 0)
+            if (txtWordId.Text.Length == 0)
             {
                 MessageBox.Show("No data selected. Operation can't proceed.");
                 return;
@@ -127,36 +129,40 @@ namespace WordMakerDashboard
                 var newData = new Dictionary<string, string>
                 {
                     { "Word", txtWord.Text },
-                    { "Definition", txtDefinition.Text },
-                    { "Example", txtExample.Text },
-                    { "WordID", txtWordId.Text },
-                    { "Language", comboBox_Languages.Text },
+                    { "WordDefinition", txtDefinition.Text },
+                    { "WordExample", txtExample.Text },
+                    { "WordId", txtWordId.Text },
+                    { "LanguageName", comboBox_Languages.Text },
                 };
 
-                string updateWordQuery = @"
-                    UPDATE tbWords
-                    SET Word = @Word
-                    WHERE WordID = @WordID;";
+                string updateQuery = @"UPDATE tblWords
+                                           SET 
+                                               Word = @Word,
+                                               WordDefinition = @WordDefinition,
+                                               WordExample = @WordExample
+                                           WHERE WordId = @WordId 
+                                           AND LanguageId = (SELECT LanguageId FROM tbLanguages WHERE LanguageName = @LanguageName);";
 
-                string updateDefinitionQuery = @"
-                    UPDATE tbDefinitions
-                    SET Definition = @Definition,
-                        Example = @Example,
-                        Language = @Language
-                    WHERE WordID = @WordID
-                    AND Language = @Language;";
-
-                dbOperations.UpdateDatabaseEntry(updateWordQuery, newData);
-                dbOperations.UpdateDatabaseEntry(updateDefinitionQuery, newData);
+                try
+                {
+                    dbOperations.UpdateDatabaseEntry(updateQuery, newData);
+                    MessageBox.Show("Data altered successfully!");
+                    ResetAllFields();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occured while trying to alter the data: " + ex.Message);
+                }
             }
-
-            MessageBox.Show("Data altered successfully!");
-            ResetAllFields();
         }
 
         private void LoadDatabaseView()
         {
-            bindingSource.DataSource = dbOperations.SelectAllFromDictionaryDatabase(comboBox_Languages.Text);
+            var selectString = $@"SELECT WordId, Word, WordDefinition, WordExample, LanguageName, LanguageCode 
+                                  FROM tblWords w JOIN tbLanguages l ON w.LanguageId = l.LanguageId 
+                                  WHERE l.LanguageName =  N'{comboBox_Languages.Text}'";
+
+            bindingSource.DataSource = dbOperations.SelectAllFromDatabase("tblWords", selectString);
             dgvDados.DataSource = bindingSource;
             dgvDados.Enabled = true;
         }
@@ -168,6 +174,7 @@ namespace WordMakerDashboard
             txtWord.Clear();
             txtWordId.Clear();
             txtFilterWord.Clear();
+            comboBox_Languages.SelectedIndex = -1;
         }
 
         private void HandleEnableAllTextbox(bool enable)
@@ -189,6 +196,23 @@ namespace WordMakerDashboard
             btnDelete.Visible = false;
             btnSave.Visible = false;
             LoadDatabaseView();
+        }
+
+        private void PopulateComboBoxWithLanguages()
+        {
+            var selectString = $"SELECT LanguageName FROM tbLanguages";
+            var languagesTable = dbOperations.SelectAllFromDatabase("tbLanguages", selectString);
+            if (languagesTable.Rows.Count > 0)
+            {
+                foreach (DataRow row in languagesTable.Rows)
+                {
+                    comboBox_Languages.Items.Add(row["LanguageName"].ToString());
+                }
+            }
+            else
+            {
+                MessageBox.Show("No languages found in the database.");
+            }
         }
     }
 }

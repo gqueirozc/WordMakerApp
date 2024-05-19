@@ -61,7 +61,7 @@ namespace WordMakerDashboard
 
         private void tsbConsultDB_Click(object sender, EventArgs e)
         {
-            var form = new frmDatabaseGridView("tbUsers", "UserName");
+            var form = new frmDatabaseGridView("tbUsers");
             form.MdiParent = this.MdiParent;
             form.Show();
         }

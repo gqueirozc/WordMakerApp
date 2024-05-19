@@ -288,7 +288,7 @@
             // 
             this.btnDelete.BackColor = System.Drawing.Color.White;
             this.btnDelete.Image = global::WordMakerDashboard.Properties.Resources.del;
-            this.btnDelete.Location = new System.Drawing.Point(440, 29);
+            this.btnDelete.Location = new System.Drawing.Point(447, 55);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(74, 60);
             this.btnDelete.TabIndex = 7;
@@ -299,7 +299,7 @@
             // 
             this.btnSave.BackColor = System.Drawing.Color.White;
             this.btnSave.Image = global::WordMakerDashboard.Properties.Resources.save;
-            this.btnSave.Location = new System.Drawing.Point(440, 29);
+            this.btnSave.Location = new System.Drawing.Point(447, 55);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(74, 60);
             this.btnSave.TabIndex = 18;

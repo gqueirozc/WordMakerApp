@@ -75,14 +75,14 @@
             // clientUserDataToolStripMenuItem
             // 
             this.clientUserDataToolStripMenuItem.Name = "clientUserDataToolStripMenuItem";
-            this.clientUserDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.clientUserDataToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.clientUserDataToolStripMenuItem.Text = "Normal Users";
             this.clientUserDataToolStripMenuItem.Click += new System.EventHandler(this.clientUserDataToolStripMenuItem_Click);
             // 
             // dictionaryConsultTableStrip
             // 
             this.dictionaryConsultTableStrip.Name = "dictionaryConsultTableStrip";
-            this.dictionaryConsultTableStrip.Size = new System.Drawing.Size(180, 22);
+            this.dictionaryConsultTableStrip.Size = new System.Drawing.Size(152, 22);
             this.dictionaryConsultTableStrip.Text = "Dictionaries";
             this.dictionaryConsultTableStrip.Click += new System.EventHandler(this.dictionaryConsultTableStrip_Click);
             // 
@@ -99,7 +99,7 @@
             // administratorsToolStripMenuItem
             // 
             this.administratorsToolStripMenuItem.Name = "administratorsToolStripMenuItem";
-            this.administratorsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.administratorsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.administratorsToolStripMenuItem.Text = "Administrators";
             this.administratorsToolStripMenuItem.Click += new System.EventHandler(this.administratorsToolStripMenuItem_Click);
             // 
@@ -132,6 +132,7 @@
             this.newDictionaryEntryToolStripMenuItem.Name = "newDictionaryEntryToolStripMenuItem";
             this.newDictionaryEntryToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newDictionaryEntryToolStripMenuItem.Text = "Dictionary Entry";
+            this.newDictionaryEntryToolStripMenuItem.Click += new System.EventHandler(this.newDictionaryEntryToolStripMenuItem_Click);
             // 
             // menuStrip1
             // 
@@ -170,7 +171,7 @@
             this.Controls.Add(this.menuStrip1);
             this.IsMdiContainer = true;
             this.Name = "frmDashboard";
-            this.Text = "frmDashboard";
+            this.Text = "Dashboard";
             this.Load += new System.EventHandler(this.frmDashboard_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
