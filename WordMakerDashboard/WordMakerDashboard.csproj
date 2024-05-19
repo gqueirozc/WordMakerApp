@@ -95,14 +95,20 @@
     <Compile Include="frmAdminOperations.Designer.cs">
       <DependentUpon>frmAdminOperations.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmDatabaseGridView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmDatabaseGridView.Designer.cs">
+      <DependentUpon>frmDatabaseGridView.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmUserOperations.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmUserOperations.Designer.cs">
       <DependentUpon>frmUserOperations.cs</DependentUpon>
     </Compile>
-    <Compile Include="Database\DatabaseConnect.cs" />
-    <Compile Include="Database\DatabaseOperations.cs" />
+    <Compile Include="Services\DatabaseConnect.cs" />
+    <Compile Include="Services\DatabaseOperations.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -135,9 +141,13 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\CryptographyService.cs" />
     <Compile Include="Services\DictionaryService.cs" />
     <EmbeddedResource Include="frmAdminOperations.resx">
       <DependentUpon>frmAdminOperations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmDatabaseGridView.resx">
+      <DependentUpon>frmDatabaseGridView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmUserOperations.resx">
       <DependentUpon>frmUserOperations.cs</DependentUpon>
@@ -189,6 +199,7 @@
     <Content Include="imagens\sair.png" />
     <Content Include="imagens\save.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

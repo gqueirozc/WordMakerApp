@@ -38,11 +38,14 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.tsbExit = new System.Windows.Forms.ToolStripButton();
             this.grbFicha = new System.Windows.Forms.GroupBox();
-            this.btnCancel = new System.Windows.Forms.Button();
+            this.txtPassword = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtLogin = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtPhone = new System.Windows.Forms.MaskedTextBox();
             this.cbPrivilegeLevel = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.txtPhone = new System.Windows.Forms.MaskedTextBox();
             this.toolStrip1.SuspendLayout();
             this.grbFicha.SuspendLayout();
             this.SuspendLayout();
@@ -54,20 +57,21 @@
             this.tsbConsultDB.Name = "tsbConsultDB";
             this.tsbConsultDB.Size = new System.Drawing.Size(123, 24);
             this.tsbConsultDB.Text = "Consult Database";
+            this.tsbConsultDB.Click += new System.EventHandler(this.tsbConsultDB_Click);
             // 
             // txtEmail
             // 
             this.txtEmail.Location = new System.Drawing.Point(103, 75);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(186, 20);
-            this.txtEmail.TabIndex = 5;
+            this.txtEmail.TabIndex = 2;
             // 
             // txtFullName
             // 
             this.txtFullName.Location = new System.Drawing.Point(103, 46);
             this.txtFullName.Name = "txtFullName";
             this.txtFullName.Size = new System.Drawing.Size(186, 20);
-            this.txtFullName.TabIndex = 4;
+            this.txtFullName.TabIndex = 1;
             // 
             // label3
             // 
@@ -90,10 +94,10 @@
             // btnSave
             // 
             this.btnSave.BackColor = System.Drawing.Color.White;
-            this.btnSave.Location = new System.Drawing.Point(19, 169);
+            this.btnSave.Location = new System.Drawing.Point(25, 229);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(88, 29);
-            this.btnSave.TabIndex = 18;
+            this.btnSave.Size = new System.Drawing.Size(276, 29);
+            this.btnSave.TabIndex = 0;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = false;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -117,9 +121,14 @@
             this.tsbExit.Name = "tsbExit";
             this.tsbExit.Size = new System.Drawing.Size(50, 24);
             this.tsbExit.Text = "Exit";
+            this.tsbExit.Click += new System.EventHandler(this.tsbExit_Click);
             // 
             // grbFicha
             // 
+            this.grbFicha.Controls.Add(this.txtPassword);
+            this.grbFicha.Controls.Add(this.label5);
+            this.grbFicha.Controls.Add(this.txtLogin);
+            this.grbFicha.Controls.Add(this.label1);
             this.grbFicha.Controls.Add(this.txtPhone);
             this.grbFicha.Controls.Add(this.cbPrivilegeLevel);
             this.grbFicha.Controls.Add(this.label4);
@@ -130,20 +139,51 @@
             this.grbFicha.Controls.Add(this.label2);
             this.grbFicha.Location = new System.Drawing.Point(12, 30);
             this.grbFicha.Name = "grbFicha";
-            this.grbFicha.Size = new System.Drawing.Size(307, 133);
+            this.grbFicha.Size = new System.Drawing.Size(307, 193);
             this.grbFicha.TabIndex = 19;
             this.grbFicha.TabStop = false;
-            this.grbFicha.Text = "Register New Admin Card:";
+            this.grbFicha.Text = "Register New Admin";
             // 
-            // btnCancel
+            // txtPassword
             // 
-            this.btnCancel.BackColor = System.Drawing.Color.White;
-            this.btnCancel.Location = new System.Drawing.Point(231, 169);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(88, 29);
-            this.btnCancel.TabIndex = 17;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = false;
+            this.txtPassword.Location = new System.Drawing.Point(103, 153);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.Size = new System.Drawing.Size(186, 20);
+            this.txtPassword.TabIndex = 5;
+            this.txtPassword.Text = "12345";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(11, 160);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(53, 13);
+            this.label5.TabIndex = 28;
+            this.label5.Text = "Password";
+            // 
+            // txtLogin
+            // 
+            this.txtLogin.Location = new System.Drawing.Point(103, 127);
+            this.txtLogin.Name = "txtLogin";
+            this.txtLogin.Size = new System.Drawing.Size(186, 20);
+            this.txtLogin.TabIndex = 4;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(11, 134);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(36, 13);
+            this.label1.TabIndex = 26;
+            this.label1.Text = "Login:";
+            // 
+            // txtPhone
+            // 
+            this.txtPhone.Location = new System.Drawing.Point(103, 101);
+            this.txtPhone.Mask = "(99) 00000-0000";
+            this.txtPhone.Name = "txtPhone";
+            this.txtPhone.Size = new System.Drawing.Size(186, 20);
+            this.txtPhone.TabIndex = 3;
             // 
             // cbPrivilegeLevel
             // 
@@ -156,7 +196,7 @@
             this.cbPrivilegeLevel.Location = new System.Drawing.Point(103, 19);
             this.cbPrivilegeLevel.Name = "cbPrivilegeLevel";
             this.cbPrivilegeLevel.Size = new System.Drawing.Size(53, 21);
-            this.cbPrivilegeLevel.TabIndex = 23;
+            this.cbPrivilegeLevel.TabIndex = 0;
             // 
             // label4
             // 
@@ -176,23 +216,15 @@
             this.label6.TabIndex = 7;
             this.label6.Text = "Phone Number:";
             // 
-            // txtPhone
-            // 
-            this.txtPhone.Location = new System.Drawing.Point(103, 101);
-            this.txtPhone.Mask = "(99) 00000-0000";
-            this.txtPhone.Name = "txtPhone";
-            this.txtPhone.Size = new System.Drawing.Size(186, 20);
-            this.txtPhone.TabIndex = 25;
-            // 
             // frmRegisterAdmin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(334, 204);
+            this.ClientSize = new System.Drawing.Size(334, 270);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.grbFicha);
-            this.Controls.Add(this.btnCancel);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "frmRegisterAdmin";
             this.Text = "Register Administrator";
             this.toolStrip1.ResumeLayout(false);
@@ -214,11 +246,14 @@
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.GroupBox grbFicha;
-        private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.ToolStripButton tsbExit;
         private System.Windows.Forms.ComboBox cbPrivilegeLevel;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.MaskedTextBox txtPhone;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox txtPassword;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox txtLogin;
+        private System.Windows.Forms.Label label1;
     }
 }

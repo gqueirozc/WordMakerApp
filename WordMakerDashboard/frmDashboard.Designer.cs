@@ -108,6 +108,7 @@
             this.newUserToolStripMenuItem.Name = "newUserToolStripMenuItem";
             this.newUserToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newUserToolStripMenuItem.Text = "Client User";
+            this.newUserToolStripMenuItem.Click += new System.EventHandler(this.newUserToolStripMenuItem_Click);
             // 
             // newAdminToolStripMenuItem
             // 
@@ -119,8 +120,8 @@
             // arquivoToolStripMenuItem
             // 
             this.arquivoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newUserToolStripMenuItem,
             this.newDictionaryEntryToolStripMenuItem,
+            this.newUserToolStripMenuItem,
             this.newAdminToolStripMenuItem});
             this.arquivoToolStripMenuItem.Name = "arquivoToolStripMenuItem";
             this.arquivoToolStripMenuItem.Size = new System.Drawing.Size(88, 20);

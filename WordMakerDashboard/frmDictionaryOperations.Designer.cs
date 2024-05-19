@@ -226,6 +226,7 @@
             // comboBox_Languages
             // 
             this.comboBox_Languages.DisplayMember = "English";
+            this.comboBox_Languages.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_Languages.FormattingEnabled = true;
             this.comboBox_Languages.Items.AddRange(new object[] {
             "English",
@@ -286,6 +287,7 @@
             this.Controls.Add(this.dgvDados);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.comboBox_Languages);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "frmDictionaryOperations";
             this.Text = "Dictionary Database Operations";
             this.Load += new System.EventHandler(this.frmDictionaryOperations_Load);

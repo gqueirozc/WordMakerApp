@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using WordMakerDashboard.Database;
+using WordMakerDashboard.Services;
 
 namespace WordMakerDashboard
 {
@@ -9,11 +10,14 @@ namespace WordMakerDashboard
     {
         private readonly BindingSource bindingSource;
         private readonly DatabaseOperations dbOperations;
+        private readonly CryptographyService cryptographyService;
+
         public UserOperations()
         {
             InitializeComponent();
             dbOperations = new DatabaseOperations();
             bindingSource = new BindingSource();
+            cryptographyService = new CryptographyService();
             btnDelete.Visible = false;
             btnSave.Visible = false;
         }
@@ -54,29 +58,33 @@ namespace WordMakerDashboard
                 var newData = new Dictionary<string, string>
                 {
                     { "UserID", txtUserId.Text },
-                    { "Username", txtUsername.Text },
-                    { "Email", txtEmail.Text },
-                    { "PhoneNumber", txtPhone.Text },
-                    { "MainLanguage", txtMainLanguage.Text },
+                    { "UserName", txtUsername.Text },
+                    { "UserEmail", txtEmail.Text },
                     { "UserLevel", txtUserLevel.Text },
                     { "UserPoints", txtUserPoints.Text },
+                    { "UserPassword", cryptographyService.ConvertToMd5(txtPassword.Text) },
                 };
 
                 string updateQuery = @"
-                    UPDATE clientUsers
-                    SET Username = @Username,
-                        Email = @Email,
-                        PhoneNumber = @PhoneNumber,
-                        MainLanguage = @MainLanguage,
+                    UPDATE tbUsers
+                    SET UserName = @UserName,
+                        UserEmail = @UserEmail,
                         UserLevel = @UserLevel,
-                        UserPoints = @UserPoints
+                        UserPoints = @UserPoints,
+                        UserPassword = @UserPassword
                     WHERE UserID = @UserID";
 
-                dbOperations.UpdateDatabaseEntry(updateQuery, newData);
+                try
+                {
+                    dbOperations.UpdateDatabaseEntry(updateQuery, newData);
+                    MessageBox.Show("Data altered successfully!");
+                    ResetAllFields();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occured while trying to alter the data: " + ex.Message);
+                }
             }
-
-            MessageBox.Show("Data altered successfully!");
-            ResetAllFields();
         }
 
 
@@ -119,18 +127,16 @@ namespace WordMakerDashboard
         {
             txtUserId.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[0].Value.ToString();
             txtUsername.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[1].Value.ToString();
-            txtEmail.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[2].Value.ToString();
-            txtPhone.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[3].Value.ToString();
-            txtMainLanguage.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[4].Value.ToString();
-            txtUserLevel.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[5].Value.ToString();
-            txtUserPoints.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[6].Value.ToString();
+            txtPassword.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[2].Value.ToString();
+            txtEmail.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[3].Value.ToString();
+            txtUserLevel.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[4].Value.ToString();
+            txtUserPoints.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[5].Value.ToString();
         }
 
         private void ClearTextBoxes()
         {
             txtEmail.Clear();
-            txtMainLanguage.Clear();
-            txtPhone.Clear();
+            txtPassword.Clear();
             txtUserLevel.Clear();
             txtUserPoints.Clear();
             txtUsername.Clear();
@@ -141,17 +147,15 @@ namespace WordMakerDashboard
         private void HandleEnableAllTextbox(bool enable)
         {
             txtEmail.Enabled = enable;
-            txtMainLanguage.Enabled = enable;
-            txtPhone.Enabled = enable;
+            txtPassword.Enabled = enable;
             txtUserLevel.Enabled = enable;
             txtUserPoints.Enabled = enable;
             txtUsername.Enabled = enable;
-            txtFilterWord.Enabled = enable;
         }
 
         private void LoadDatabaseView()
         {
-            bindingSource.DataSource = dbOperations.SelectAllFromDatabase("clientUsers");
+            bindingSource.DataSource = dbOperations.SelectAllFromDatabase("tbUsers");
             dgvDados.DataSource = bindingSource;
             dgvDados.Enabled = true;
         }

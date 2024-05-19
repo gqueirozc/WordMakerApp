@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using WordMakerDashboard.Database;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using WordMakerDashboard.Services;
 
 namespace WordMakerDashboard
 {
@@ -10,11 +10,14 @@ namespace WordMakerDashboard
     {
         private readonly BindingSource bindingSource;
         private readonly DatabaseOperations dbOperations;
+        private readonly CryptographyService cryptographyService;
+
         public frmAdminOperations()
         {
             InitializeComponent();
             dbOperations = new DatabaseOperations();
             bindingSource = new BindingSource();
+            cryptographyService = new CryptographyService();
             btnDelete.Visible = false;
             btnSave.Visible = false;
         }
@@ -38,7 +41,7 @@ namespace WordMakerDashboard
 
             if (resp == DialogResult.Yes)
             {
-                dbOperations.DeleteFromDatabaseTable("adminUsers", "AdminID", Convert.ToInt32(txtAdminId.Text));
+                dbOperations.DeleteFromDatabaseTable("tbAdmins", "AdminID", Convert.ToInt32(txtAdminId.Text));
             }
 
             MessageBox.Show("Entry deleted successfully!");
@@ -55,10 +58,12 @@ namespace WordMakerDashboard
                 var newData = new Dictionary<string, string>
                 {
                     { "AdminID", txtAdminId.Text },
-                    { "FullName", txtFullName.Text },
-                    { "CorporateEmail", txtEmail.Text },
-                    { "PhoneNumber", txtPhone.Text },
-                    { "PrivilegeLevel", dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[4].Value.ToString() }
+                    { "AdminFullName", txtFullName.Text },
+                    { "AdminCorporateEmail", txtEmail.Text },
+                    { "AdminPhoneNumber", txtPhone.Text },
+                    { "AdminPrivilegeLevel", dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[4].Value.ToString() },
+                    { "AdminPassword", cryptographyService.ConvertToMd5(txtPassword.Text) },
+                    { "AdminLogin", txtLogin.Text },
                 };
 
                 if (cbPrivilegeLevel.Text != "")
@@ -67,18 +72,26 @@ namespace WordMakerDashboard
                 }
 
                 string updateQuery = @"
-                    UPDATE adminUsers
-                    SET FullName = @FullName,
-                        CorporateEmail = @CorporateEmail,
-                        PhoneNumber = @PhoneNumber,
-                        PrivilegeLevel = @PrivilegeLevel
+                    UPDATE tbAdmins
+                    SET AdminFullName = @AdminFullName,
+                        AdminCorporateEmail = @AdminCorporateEmail,
+                        AdminPhoneNumber = @AdminPhoneNumber,
+                        AdminPrivilegeLevel = @AdminPrivilegeLevel,
+                        AdminPassword = @AdminPassword,
+                        AdminLogin = @AdminLogin
                     WHERE AdminID = @AdminID";
 
-                dbOperations.UpdateDatabaseEntry(updateQuery, newData);
+                try
+                {
+                    dbOperations.UpdateDatabaseEntry(updateQuery, newData);
+                    MessageBox.Show("Data altered successfully!");
+                    ResetAllFields();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occured while trying to alter the data: " + ex.Message);
+                }
             }
-
-            MessageBox.Show("Data altered successfully!");
-            ResetAllFields();
         }
 
         private void tsbDelete_Click(object sender, EventArgs e)
@@ -120,7 +133,7 @@ namespace WordMakerDashboard
             }
             else
             {
-                string columnName = "FullName";
+                string columnName = "AdminFullName";
                 string filterExpression = $"[{columnName}] LIKE '%{filterText}%'";
                 bindingSource.Filter = filterExpression;
             }
@@ -132,6 +145,8 @@ namespace WordMakerDashboard
             txtFullName.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[1].Value.ToString();
             txtEmail.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[2].Value.ToString();
             txtPhone.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[3].Value.ToString();
+            txtLogin.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[5].Value.ToString();
+            txtPassword.Text = dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[6].Value.ToString();
         }
 
         private void ClearTextBoxes()
@@ -141,6 +156,8 @@ namespace WordMakerDashboard
             txtFullName.Clear();
             txtAdminId.Clear();
             txtFilterWord.Clear();
+            txtPassword.Clear();
+            txtLogin.Clear();
             cbPrivilegeLevel.SelectedIndex = -1;
         }
 
@@ -149,13 +166,14 @@ namespace WordMakerDashboard
             txtEmail.Enabled = enable;
             txtPhone.Enabled = enable;
             txtFullName.Enabled = enable;
-            txtFilterWord.Enabled = enable;
+            txtPassword.Enabled = enable;
+            txtLogin.Enabled = enable;
             cbPrivilegeLevel.Enabled = enable;
         }
 
         private void LoadDatabaseView()
         {
-            bindingSource.DataSource = dbOperations.SelectAllFromDatabase("adminUsers");
+            bindingSource.DataSource = dbOperations.SelectAllFromDatabase("tbAdmins");
             dgvDados.DataSource = bindingSource;
             dgvDados.Enabled = true;
         }

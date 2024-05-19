@@ -49,5 +49,12 @@ namespace WordMakerDashboard
             form.MdiParent = this;
             form.Show();
         }
+
+        private void newUserToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var form = new frmRegisterUser();
+            form.MdiParent = this;
+            form.Show();
+        }
     }
 }

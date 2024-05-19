@@ -1,24 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using WordMakerDashboard.Database;
+using WordMakerDashboard.Services;
 
 namespace WordMakerDashboard
 {
     public partial class frmRegisterAdmin : Form
     {
         private readonly DatabaseOperations dbOperations;
+        private readonly CryptographyService cryptographyService;
 
         public frmRegisterAdmin()
         {
             InitializeComponent();
             dbOperations = new DatabaseOperations();
+            cryptographyService = new CryptographyService();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -30,30 +27,33 @@ namespace WordMakerDashboard
             {
                 var newData = new Dictionary<string, string>
                 {
-                    { "FullName", txtFullName.Text },
-                    { "CorporateEmail", txtEmail.Text },
-                    { "PhoneNumber", txtPhone.Text },
-                    { "PrivilegeLevel", cbPrivilegeLevel.Text }
+                    { "AdminFullName", txtFullName.Text },
+                    { "AdminCorporateEmail", txtEmail.Text },
+                    { "AdminPhoneNumber", txtPhone.Text },
+                    { "AdminPrivilegeLevel", cbPrivilegeLevel.Text },
+                    { "AdminLogin", txtLogin.Text },
+                    { "AdminPassword", cryptographyService.ConvertToMd5(txtPassword.Text)}
                 };
 
                 if (cbPrivilegeLevel.Text != "")
                 {
-                    newData["PrivilegeLevel"] = cbPrivilegeLevel.Text;
+                    newData["AdminPrivilegeLevel"] = cbPrivilegeLevel.Text;
                 }
 
                 string updateQuery = @"
-                    INSERT INTO adminUsers (FullName, CorporateEmail, PhoneNumber, PrivilegeLevel) 
-                    VALUES (@FullName, @CorporateEmail, @PhoneNumber, @PrivilegeLevel)";
+                    INSERT INTO tbAdmins (AdminFullName, AdminCorporateEmail, AdminPhoneNumber, AdminPrivilegeLevel, AdminLogin, AdminPassword) 
+                    VALUES (@AdminFullName, @AdminCorporateEmail, @AdminPhoneNumber, @AdminPrivilegeLevel, @AdminLogin, @AdminPassword)";
+             
                 try {
                     dbOperations.UpdateDatabaseEntry(updateQuery, newData);
-                } catch (Exception ex)
+                    MessageBox.Show("Admin added successfully!");
+                    ClearTextBoxes();
+                }
+                catch (Exception ex)
                 {
                     MessageBox.Show("An error occured while trying to add new entry: " + ex.Message);
                 }
             }
-
-            MessageBox.Show("Admin added successfully!");
-            ClearTextBoxes();
         }
 
         private void ClearTextBoxes()
@@ -61,7 +61,21 @@ namespace WordMakerDashboard
             txtEmail.Clear();
             txtPhone.Clear();
             txtFullName.Clear();
+            txtLogin.Clear();
+            txtPassword.Text = "12345";
             cbPrivilegeLevel.SelectedIndex = -1;
+        }
+
+        private void tsbConsultDB_Click(object sender, EventArgs e)
+        {
+            var form = new frmDatabaseGridView("tbAdmins", "AdminFullName");
+            form.MdiParent = this.MdiParent;
+            form.Show();
+        }
+
+        private void tsbExit_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }

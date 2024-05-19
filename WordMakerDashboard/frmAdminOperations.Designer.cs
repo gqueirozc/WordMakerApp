@@ -45,6 +45,10 @@
             this.label9 = new System.Windows.Forms.Label();
             this.txtFilterWord = new System.Windows.Forms.TextBox();
             this.grbFicha = new System.Windows.Forms.GroupBox();
+            this.txtPassword = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.txtLogin = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.txtPhone = new System.Windows.Forms.MaskedTextBox();
             this.cbPrivilegeLevel = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -117,7 +121,7 @@
             this.txtEmail.Location = new System.Drawing.Point(96, 81);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(309, 20);
-            this.txtEmail.TabIndex = 5;
+            this.txtEmail.TabIndex = 4;
             // 
             // txtFullName
             // 
@@ -125,7 +129,7 @@
             this.txtFullName.Location = new System.Drawing.Point(96, 52);
             this.txtFullName.Name = "txtFullName";
             this.txtFullName.Size = new System.Drawing.Size(309, 20);
-            this.txtFullName.TabIndex = 4;
+            this.txtFullName.TabIndex = 3;
             // 
             // txtAdminId
             // 
@@ -133,7 +137,7 @@
             this.txtAdminId.Location = new System.Drawing.Point(66, 25);
             this.txtAdminId.Name = "txtAdminId";
             this.txtAdminId.Size = new System.Drawing.Size(42, 20);
-            this.txtAdminId.TabIndex = 3;
+            this.txtAdminId.TabIndex = 0;
             // 
             // label3
             // 
@@ -164,7 +168,7 @@
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(410, 156);
+            this.btnClear.Location = new System.Drawing.Point(410, 206);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(147, 23);
             this.btnClear.TabIndex = 34;
@@ -175,7 +179,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(18, 161);
+            this.label9.Location = new System.Drawing.Point(18, 211);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(109, 13);
             this.label9.TabIndex = 35;
@@ -183,7 +187,7 @@
             // 
             // txtFilterWord
             // 
-            this.txtFilterWord.Location = new System.Drawing.Point(133, 158);
+            this.txtFilterWord.Location = new System.Drawing.Point(133, 208);
             this.txtFilterWord.Name = "txtFilterWord";
             this.txtFilterWord.Size = new System.Drawing.Size(186, 20);
             this.txtFilterWord.TabIndex = 36;
@@ -191,6 +195,10 @@
             // 
             // grbFicha
             // 
+            this.grbFicha.Controls.Add(this.txtPassword);
+            this.grbFicha.Controls.Add(this.label7);
+            this.grbFicha.Controls.Add(this.txtLogin);
+            this.grbFicha.Controls.Add(this.label5);
             this.grbFicha.Controls.Add(this.txtPhone);
             this.grbFicha.Controls.Add(this.cbPrivilegeLevel);
             this.grbFicha.Controls.Add(this.label4);
@@ -205,10 +213,44 @@
             this.grbFicha.Controls.Add(this.label1);
             this.grbFicha.Location = new System.Drawing.Point(12, 30);
             this.grbFicha.Name = "grbFicha";
-            this.grbFicha.Size = new System.Drawing.Size(545, 118);
+            this.grbFicha.Size = new System.Drawing.Size(545, 170);
             this.grbFicha.TabIndex = 30;
             this.grbFicha.TabStop = false;
             this.grbFicha.Text = "Update/Delete";
+            // 
+            // txtPassword
+            // 
+            this.txtPassword.Enabled = false;
+            this.txtPassword.Location = new System.Drawing.Point(96, 133);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.Size = new System.Drawing.Size(309, 20);
+            this.txtPassword.TabIndex = 6;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 136);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(88, 13);
+            this.label7.TabIndex = 25;
+            this.label7.Text = "Admin Password:";
+            // 
+            // txtLogin
+            // 
+            this.txtLogin.Enabled = false;
+            this.txtLogin.Location = new System.Drawing.Point(96, 107);
+            this.txtLogin.Name = "txtLogin";
+            this.txtLogin.Size = new System.Drawing.Size(309, 20);
+            this.txtLogin.TabIndex = 5;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(6, 110);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(68, 13);
+            this.label5.TabIndex = 23;
+            this.label5.Text = "Admin Login:";
             // 
             // txtPhone
             // 
@@ -217,7 +259,7 @@
             this.txtPhone.Mask = "(99) 00000-0000";
             this.txtPhone.Name = "txtPhone";
             this.txtPhone.Size = new System.Drawing.Size(101, 20);
-            this.txtPhone.TabIndex = 22;
+            this.txtPhone.TabIndex = 2;
             // 
             // cbPrivilegeLevel
             // 
@@ -231,7 +273,7 @@
             this.cbPrivilegeLevel.Location = new System.Drawing.Point(196, 25);
             this.cbPrivilegeLevel.Name = "cbPrivilegeLevel";
             this.cbPrivilegeLevel.Size = new System.Drawing.Size(53, 21);
-            this.cbPrivilegeLevel.TabIndex = 21;
+            this.cbPrivilegeLevel.TabIndex = 1;
             // 
             // label4
             // 
@@ -249,7 +291,7 @@
             this.btnDelete.Location = new System.Drawing.Point(440, 29);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(74, 60);
-            this.btnDelete.TabIndex = 19;
+            this.btnDelete.TabIndex = 7;
             this.btnDelete.UseVisualStyleBackColor = false;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
@@ -267,11 +309,13 @@
             // dgvDados
             // 
             this.dgvDados.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvDados.Location = new System.Drawing.Point(12, 185);
+            this.dgvDados.Location = new System.Drawing.Point(12, 235);
+            this.dgvDados.MultiSelect = false;
             this.dgvDados.Name = "dgvDados";
             this.dgvDados.ReadOnly = true;
             this.dgvDados.RowHeadersWidth = 51;
-            this.dgvDados.Size = new System.Drawing.Size(545, 281);
+            this.dgvDados.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvDados.Size = new System.Drawing.Size(545, 283);
             this.dgvDados.TabIndex = 32;
             this.dgvDados.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvDados_CellEnter);
             // 
@@ -279,13 +323,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(569, 473);
+            this.ClientSize = new System.Drawing.Size(569, 530);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.txtFilterWord);
             this.Controls.Add(this.grbFicha);
             this.Controls.Add(this.dgvDados);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "frmAdminOperations";
             this.Text = "Administrator Database Operations";
             this.Load += new System.EventHandler(this.frmAdminOperations_Load);
@@ -323,5 +368,9 @@
         private System.Windows.Forms.ComboBox cbPrivilegeLevel;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.MaskedTextBox txtPhone;
+        private System.Windows.Forms.TextBox txtPassword;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox txtLogin;
+        private System.Windows.Forms.Label label5;
     }
 }
