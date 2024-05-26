@@ -6,13 +6,11 @@ namespace WordMakerDashboard.Forms
 {
     public partial class frmLogin : Form
     {
-        private DatabaseService dbOperations;
         private CryptographyService cryptographyService;
 
         public frmLogin()
         {
             InitializeComponent();
-            dbOperations = new DatabaseService();
             cryptographyService = new CryptographyService();
         }
 
@@ -23,7 +21,7 @@ namespace WordMakerDashboard.Forms
 
             var query = $"SELECT * FROM tbAdmins WHERE AdminLogin = '{login}'";
 
-            var dataTable = dbOperations.SelectAllFromDatabase("tbAdmins", query);
+            var dataTable = DatabaseService.SelectAllFromDatabase("tbAdmins", query);
 
             if (dataTable.Rows.Count == 1)
             {

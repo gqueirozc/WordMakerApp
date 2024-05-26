@@ -9,21 +9,16 @@ namespace WordMakerDashboard
 {
     public partial class frmRegisterDictionaryOrWord : Form
     {
-        private DatabaseService dbOperations;
-
         public frmRegisterDictionaryOrWord()
         {
             InitializeComponent();
-            dbOperations = new DatabaseService();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
             var languageName = txtLanguage.Text;
             var word = txtWord.Text;
-            var definition = txtDefinition.Text;
-            var example = txtExample.Text;
-            var newData = new Dictionary<string, string>
+            var newData = new Dictionary<string, object>
             {
                 { "Word", txtWord.Text },
                 { "WordDefinition", txtDefinition.Text },
@@ -31,8 +26,8 @@ namespace WordMakerDashboard
                 { "LanguageName", txtLanguage.Text },
             };
 
-            if (!dbOperations.LanguageExists(languageName))
-            {
+            if (!DatabaseService.LanguageExists(languageName))
+            {   
                 var resp = MessageBox.Show("Language not found. Add new Language?", "Language Not Found!", MessageBoxButtons.YesNo);
                 if (resp == DialogResult.Yes)
                 {
@@ -43,7 +38,7 @@ namespace WordMakerDashboard
 
                     try
                     {
-                        dbOperations.ExecuteQuery(query);
+                        DatabaseService.ExecuteQuery(query);
                         MessageBox.Show("Language added successfully!");
                     }
                     catch (Exception ex)
@@ -59,14 +54,14 @@ namespace WordMakerDashboard
                 }
             }
 
-            if (dbOperations.WordExists(word, languageName, out var wordId))
+            if (DatabaseService.WordExists(word, languageName, out var wordId))
             {
-                newData.Add("WordId", wordId.ToString());
+                newData.Add("WordId", wordId);
                 if (PromptForUpdate(word))
                 {
                     try
                     {
-                        dbOperations.UpdateWord(newData);
+                        DatabaseService.UpdateWord(newData);
                         MessageBox.Show("Word updated successfully!");
                         ClearTextBoxes();
                     }
@@ -86,7 +81,7 @@ namespace WordMakerDashboard
             {
                 try
                 {
-                    dbOperations.InsertWord(newData);
+                    DatabaseService.InsertWord(newData);
                     MessageBox.Show("Word added successfully!");
                     ClearTextBoxes();
                 }
@@ -114,7 +109,7 @@ namespace WordMakerDashboard
         private void tsbConsult_Click(object sender, EventArgs e)
         {
             var form = new frmDatabaseGridView("tblWords", true);
-            form.MdiParent = this.MdiParent;
+            form.MdiParent = MdiParent;
             form.Show();
         }
 
@@ -126,7 +121,7 @@ namespace WordMakerDashboard
         private void tsbAddJson_Click(object sender, EventArgs e)
         {
             var form = new frmRegisterJsonFile();
-            form.MdiParent = this.MdiParent;
+            form.MdiParent = MdiParent;
             form.Show();
         }
     }

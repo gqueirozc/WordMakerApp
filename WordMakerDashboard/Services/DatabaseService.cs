@@ -24,7 +24,7 @@ namespace WordMakerDashboard.Services
         /// <param name="tableName">Name of the table to be selected</param>
         /// <param name="strSelect">[optional] - Full query string for the select. Will be used instead of the standard.</param>
         /// <returns>Returns a DataTable will all the information from the query.</returns>
-        public DataTable SelectAllFromDatabase(string tableName, string strSelect = "")
+        public static DataTable SelectAllFromDatabase(string tableName, string strSelect = "")
         {
             if (strSelect == "") strSelect = $"SELECT * FROM {tableName};";
             var dataTable = new DataTable();
@@ -47,7 +47,7 @@ namespace WordMakerDashboard.Services
         /// <param name="tableName">Name of the table for the entry to be deleted from.</param>
         /// <param name="idFieldName">Field of reference for the deletion</param>
         /// <param name="deletedId">The identification for the entry that will be deleted</param>
-        public void DeleteFromDatabaseTable(string tableName, string idFieldName, int deletedId)
+        public static void DeleteFromDatabaseTable(string tableName, string idFieldName, int deletedId)
         {
             var strDELETE = $"DELETE FROM {tableName} WHERE {idFieldName} = @{idFieldName}";
             using (var oConnection = new NpgsqlConnection(connectionString))
@@ -67,7 +67,7 @@ namespace WordMakerDashboard.Services
         /// </summary>
         /// <param name="updateQuery">Query for the update with placeholders</param>
         /// <param name="updateValues">Dictionary containing the key as the placeholder name, and the value as its actual value to be updated.</param>
-        public void UpdateDatabaseEntry(string updateQuery, Dictionary<string, string> updateValues)
+        public static void UpdateDatabaseEntry(string updateQuery, Dictionary<string, object> updateValues)
         {
             using (var connection = new NpgsqlConnection(connectionString))
             {
@@ -89,7 +89,7 @@ namespace WordMakerDashboard.Services
         /// Executes a singular query on database.
         /// </summary>
         /// <param name="query">string of the full query to be executed.</param>
-        public void ExecuteQuery(string query)
+        public static void ExecuteQuery(string query)
         {
             using (var connection = new NpgsqlConnection(connectionString))
             {
@@ -108,7 +108,7 @@ namespace WordMakerDashboard.Services
         /// </summary>
         /// <param name="languageName">Name of the language to be checked.</param>
         /// <returns>true if the language exists, otherwise, false.</returns>
-        public bool LanguageExists(string languageName)
+        public static bool LanguageExists(string languageName)
         {
             bool exists = false;
             string query = $"SELECT COUNT(*) FROM tbLanguages WHERE LanguageName = '{languageName}'";
@@ -138,7 +138,7 @@ namespace WordMakerDashboard.Services
         /// <param name="word">The word to be checked.</param>
         /// <param name="languageName">Name of the language of the word.</param>
         /// <returns>true if the word exists, otherwise, false.</returns>
-        public bool WordExists(string word, string languageName, out int wordId)
+        public static bool WordExists(string word, string languageName, out int wordId)
         {
             wordId = -1;
             bool exists = false;
@@ -188,7 +188,7 @@ namespace WordMakerDashboard.Services
         /// <param name="wordDictionary">A deserialized dictionary from a JSON file containing the word's info.</param>
         /// <param name="languageName">The language of the dictionary for the words to be added to.</param>
         /// <param name="bgWorker">An instance of the background worker to update the progress during its process.</param>
-        public void PopulateDatabaseWithNewDictionary(List<WordInfo> wordDictionary, string languageName, BackgroundWorker bgWorker)
+        public static void PopulateDatabaseWithNewDictionary(List<WordInfo> wordDictionary, string languageName, BackgroundWorker bgWorker)
         {
             using (var connection = new NpgsqlConnection(connectionString))
             {
@@ -205,13 +205,13 @@ namespace WordMakerDashboard.Services
                     var word = entry.Word;
                     bool wordExists = WordExists(word, languageName, out var wordId);
 
-                    var newData = new Dictionary<string, string>
+                    var newData = new Dictionary<string, object>
                     {
                         { "Word", word },
                         { "WordDefinition", entry.Definition },
                         { "WordExample", entry.Example },
                         { "LanguageName", languageName },
-                        { "WordId", wordId.ToString()}
+                        { "WordId", wordId }
                     };
 
                     currentIteration += 1;
@@ -234,7 +234,7 @@ namespace WordMakerDashboard.Services
         /// Updates a word from the dictionary on the database.
         /// </summary>
         /// <param name="updatedDictionary">Dictionary of strings that contain the placeholder and value for the update to happen.</param>
-        public void UpdateWord(Dictionary<string, string> updatedDictionary)
+        public static void UpdateWord(Dictionary<string, object> updatedDictionary)
         {
             string updateQuery = $@"UPDATE tblWords
                                         SET Word = @Word,
@@ -257,7 +257,7 @@ namespace WordMakerDashboard.Services
         /// Insertas a word into the dictionary on the database.
         /// </summary>
         /// <param name="updatedDictionary">Dictionary of strings that contain the placeholder and value for the insert to happen.</param>
-        public void InsertWord(Dictionary<string, string> updatedDictionary)
+        public static void InsertWord(Dictionary<string, object> updatedDictionary)
         {
             var query = $@"INSERT INTO tblWords (Word, LanguageId, WordDefinition, WordExample)
                                 VALUES (@Word, (SELECT LanguageId FROM tbLanguages WHERE LanguageName = @LanguageName), @WordDefinition, @WordExample)";
@@ -278,64 +278,62 @@ namespace WordMakerDashboard.Services
         /// <param name="wordLength">The maximum word length.</param>
         /// <param name="language">The language of the word.</param>
         /// <returns>A random word from database</returns>
-        public static string GetRandomWord(int wordLength, string language)
+        public static WordInfo GetRandomWord(int wordLength, string language)
         {
-            var word = "";
+            var randomWord = new WordInfo();
             using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
-                var query = $"SELECT Word FROM tblWords WHERE LanguageId = (SELECT LanguageId FROM tbLanguages WHERE LanguageName = N'{language}') AND LENGTH(Word) = {wordLength} ORDER BY RANDOM() LIMIT 1";
+                var query = $"SELECT Word, WordDefinition, WordExample FROM tblWords WHERE LanguageId = (SELECT LanguageId FROM tbLanguages WHERE LanguageName = N'{language}') AND LENGTH(Word) = {wordLength} ORDER BY RANDOM() LIMIT 1";
                 var command = new NpgsqlCommand(query, connection);
                 var reader = command.ExecuteReader();
-                if (reader.Read())
+                while (reader.Read())
                 {
-                    word = reader.GetString(0);
+                    var word = reader.GetString(0);
+                    var definition = reader.IsDBNull(1) ? null : reader.GetString(1);
+                    var example = reader.IsDBNull(2) ? null : reader.GetString(2);
+                    randomWord = new WordInfo { Word = word, Definition = definition, Example = example };
                 }
                 reader.Close();
             }
-            return word;
+
+            return randomWord;
         }
 
         /// <summary>
         /// Gets the letters from a word. 
         /// </summary>
         /// <param name="word">The word to be analized.</param>
-        /// <returns>A list with all the chars from the word.</returns>
-        public static List<char> GetLetters(string word)
+        /// <returns>A list with all the letters from the word.</returns>
+        public static List<string> SeparateLetters(string word)
         {
-            var lettersSet = new HashSet<char>();
-            foreach (var letter in word)
+            List<string> letters = new List<string>();
+
+            foreach (char letter in word)
             {
-                lettersSet.Add(letter);
+                letters.Add(letter.ToString());
             }
-            return new List<char>(lettersSet);
+
+            return letters;
         }
 
         /// <summary>
-        /// Gets random words according to the letters and max length
+        /// Gets all words according to the max length
         /// </summary>
         /// <param name="wordMaxLength">The max length of the words.</param>
-        /// <param name="letters">The letters the word can contain.</param>
-        /// <param name="numberOfEntries">The amount of entries that will be obtained.</param>
         /// <param name="language">The language of the words.</param>
         /// <returns>A list of wordinfo that contains name, definition and example of words.</returns>
-        public static List<WordInfo> GetRandomWords(int wordMaxLength, List<char> letters, int numberOfEntries, string language)
+        public static List<WordInfo> GetAllWordsByLength(int wordMaxLength, string language)
         {
             var matchingWords = new List<WordInfo>();
             using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
-                var sb = new StringBuilder();
-                foreach (var letter in letters)
-                {
-                    sb.Append($"POSITION('{letter}' IN Word) > 0 AND ");
-                }
-                var conditions = sb.ToString().TrimEnd("AND ".ToCharArray());
 
                 var query = $@"SELECT Word, WordDefinition, WordExample 
                           FROM tblWords 
                           WHERE LanguageId = (SELECT LanguageId FROM tbLanguages WHERE LanguageName = '{language}') 
-                          AND LENGTH(Word) <= {wordMaxLength} AND {conditions}";
+                          AND LENGTH(Word) <= {wordMaxLength}";
 
                 var command = new NpgsqlCommand(query, connection);
                 var reader = command.ExecuteReader();
@@ -354,7 +352,7 @@ namespace WordMakerDashboard.Services
             var random = new Random();
             matchingWords = matchingWords.OrderBy(x => random.Next()).ToList();
 
-            return matchingWords.Take(numberOfEntries).ToList();
+            return matchingWords.ToList();
         }
 
         private static bool ContainsInvalidCharacters(string word)

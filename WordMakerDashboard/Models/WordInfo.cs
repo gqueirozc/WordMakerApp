@@ -19,5 +19,10 @@
         /// Represents an example of usage of the word.
         /// </summary>
         public string Example { get; set; }
+
+        /// <summary>
+        /// Represents the url for the source of the word.
+        /// </summary>
+        public string SourceUrl { get; set; }
     }
 }

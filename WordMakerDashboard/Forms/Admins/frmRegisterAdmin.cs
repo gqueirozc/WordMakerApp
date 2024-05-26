@@ -7,13 +7,11 @@ namespace WordMakerDashboard
 {
     public partial class frmRegisterAdmin : Form
     {
-        private readonly DatabaseService dbOperations;
         private readonly CryptographyService cryptographyService;
 
         public frmRegisterAdmin()
         {
             InitializeComponent();
-            dbOperations = new DatabaseService();
             cryptographyService = new CryptographyService();
         }
 
@@ -24,12 +22,12 @@ namespace WordMakerDashboard
 
             if (resp == DialogResult.Yes)
             {
-                var newData = new Dictionary<string, string>
+                var newData = new Dictionary<string, object>
                 {
                     { "AdminFullName", txtFullName.Text },
                     { "AdminCorporateEmail", txtEmail.Text },
                     { "AdminPhoneNumber", txtPhone.Text },
-                    { "AdminPrivilegeLevel", cbPrivilegeLevel.Text },
+                    { "AdminPrivilegeLevel", Convert.ToInt32(cbPrivilegeLevel.Text) },
                     { "AdminLogin", txtLogin.Text },
                     { "AdminPassword", cryptographyService.ConvertToMd5(txtPassword.Text)}
                 };
@@ -45,7 +43,7 @@ namespace WordMakerDashboard
 
                 try
                 {
-                    dbOperations.UpdateDatabaseEntry(updateQuery, newData);
+                    DatabaseService.UpdateDatabaseEntry(updateQuery, newData);
                     MessageBox.Show("Admin added successfully!");
                     ClearTextBoxes();
                 }
@@ -69,7 +67,7 @@ namespace WordMakerDashboard
         private void tsbConsultDB_Click(object sender, EventArgs e)
         {
             var form = new frmDatabaseGridView("tbAdmins");
-            form.MdiParent = this.MdiParent;
+            form.MdiParent = MdiParent;
             form.Show();
         }
 

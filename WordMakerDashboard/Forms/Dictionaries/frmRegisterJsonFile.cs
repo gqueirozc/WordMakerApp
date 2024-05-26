@@ -9,13 +9,10 @@ namespace WordMakerDashboard.Forms.Dictionaries
     public partial class frmRegisterJsonFile : Form
     {
         private BackgroundWorker progressWorker;
-        private DatabaseService dbOperations;
 
         public frmRegisterJsonFile()
         {
             InitializeComponent();
-            dbOperations = new DatabaseService();
-
             progressBarGlobal.Visible = false;
             label3.Visible = false;
 
@@ -29,8 +26,14 @@ namespace WordMakerDashboard.Forms.Dictionaries
 
         private void btnSelectFile_Click(object sender, EventArgs e)
         {
-            var filePath = "";
             var languageName = txtLanguage.Text;
+
+            if (txtFilePath.Text == "")
+            {
+                MessageBox.Show("Defina a linguagem do dicionario.");
+                return;
+            }
+
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 InitialDirectory = "C:\\",
@@ -38,6 +41,7 @@ namespace WordMakerDashboard.Forms.Dictionaries
                 Filter = "JSON Files (*.json)|*.json",
                 Multiselect = false
             };
+            string filePath;
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 progressBarGlobal.Visible = true;
@@ -51,7 +55,7 @@ namespace WordMakerDashboard.Forms.Dictionaries
             }
             var dictionary = DictionaryService.LoadDictionary(filePath);
 
-            bool languageExists = dbOperations.LanguageExists(languageName);
+            bool languageExists = DatabaseService.LanguageExists(languageName);
             if (!languageExists)
             {
                 var resp = MessageBox.Show("Language not found. Add new Language?", "Language Not Found!", MessageBoxButtons.YesNo);
@@ -64,7 +68,7 @@ namespace WordMakerDashboard.Forms.Dictionaries
 
                     try
                     {
-                        dbOperations.ExecuteQuery(query);
+                        DatabaseService.ExecuteQuery(query);
                         MessageBox.Show("Language added successfully!");
                     }
                     catch (Exception ex)
@@ -85,7 +89,7 @@ namespace WordMakerDashboard.Forms.Dictionaries
             {
                 try
                 {
-                    dbOperations.PopulateDatabaseWithNewDictionary(dictionary, languageName, progressWorker);
+                    DatabaseService.PopulateDatabaseWithNewDictionary(dictionary, languageName, progressWorker);
                     var resp = MessageBox.Show("Operation Complete!");
                     if (resp == DialogResult.OK)
                     {

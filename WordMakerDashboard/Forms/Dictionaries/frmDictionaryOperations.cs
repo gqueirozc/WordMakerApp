@@ -8,14 +8,12 @@ namespace WordMakerDashboard
 {
     public partial class frmDictionaryOperations : Form
     {
-        private DatabaseService dbOperations;
         private BindingSource bindingSource;
 
         public frmDictionaryOperations()
         {
             InitializeComponent();
             bindingSource = new BindingSource();
-            dbOperations = new DatabaseService();
             btnDelete.Visible = false;
             btnSave.Visible = false;
         }
@@ -105,7 +103,7 @@ namespace WordMakerDashboard
 
             if (resp == DialogResult.Yes)
             {
-                dbOperations.DeleteFromDatabaseTable("tblWords", "WordID", Convert.ToInt32(txtWordId.Text));
+                DatabaseService.DeleteFromDatabaseTable("tblWords", "WordID", Convert.ToInt32(txtWordId.Text));
             }
 
             MessageBox.Show("Entry deleted successfully!");
@@ -125,12 +123,12 @@ namespace WordMakerDashboard
 
             if (resp == DialogResult.Yes)
             {
-                var newData = new Dictionary<string, string>
+                var newData = new Dictionary<string, object>
                 {
                     { "Word", txtWord.Text },
                     { "WordDefinition", txtDefinition.Text },
                     { "WordExample", txtExample.Text },
-                    { "WordId", txtWordId.Text },
+                    { "WordId", Convert.ToInt32(txtWordId.Text) },
                     { "LanguageName", comboBox_Languages.Text },
                 };
 
@@ -144,7 +142,7 @@ namespace WordMakerDashboard
 
                 try
                 {
-                    dbOperations.UpdateDatabaseEntry(updateQuery, newData);
+                    DatabaseService.UpdateDatabaseEntry(updateQuery, newData);
                     MessageBox.Show("Data altered successfully!");
                     ResetAllFields();
                 }
@@ -161,7 +159,7 @@ namespace WordMakerDashboard
                                   FROM tblWords w JOIN tbLanguages l ON w.LanguageId = l.LanguageId
                                   WHERE l.LanguageName =  N'{comboBox_Languages.Text}'";
 
-            bindingSource.DataSource = dbOperations.SelectAllFromDatabase("tblWords", selectString);
+            bindingSource.DataSource = DatabaseService.SelectAllFromDatabase("tblWords", selectString);
             dgvDados.DataSource = bindingSource;
             dgvDados.Enabled = true;
         }
@@ -199,7 +197,7 @@ namespace WordMakerDashboard
         private void PopulateComboBoxWithLanguages()
         {
             var selectString = $"SELECT LanguageName FROM tbLanguages";
-            var languagesTable = dbOperations.SelectAllFromDatabase("tbLanguages", selectString);
+            var languagesTable = DatabaseService.SelectAllFromDatabase("tbLanguages", selectString);
             if (languagesTable.Rows.Count > 0)
             {
                 foreach (DataRow row in languagesTable.Rows)

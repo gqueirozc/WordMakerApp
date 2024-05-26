@@ -8,13 +8,11 @@ namespace WordMakerDashboard
     public partial class UserOperations : Form
     {
         private readonly BindingSource bindingSource;
-        private readonly DatabaseService dbOperations;
         private readonly CryptographyService cryptographyService;
 
         public UserOperations()
         {
             InitializeComponent();
-            dbOperations = new DatabaseService();
             bindingSource = new BindingSource();
             cryptographyService = new CryptographyService();
             btnDelete.Visible = false;
@@ -40,7 +38,7 @@ namespace WordMakerDashboard
 
             if (resp == DialogResult.Yes)
             {
-                dbOperations.DeleteFromDatabaseTable("clientUsers", "UserID", Convert.ToInt32(txtUserId.Text));
+                DatabaseService.DeleteFromDatabaseTable("clientUsers", "UserID", Convert.ToInt32(txtUserId.Text));
             }
 
             MessageBox.Show("Entry deleted successfully!");
@@ -54,9 +52,9 @@ namespace WordMakerDashboard
 
             if (resp == DialogResult.Yes)
             {
-                var newData = new Dictionary<string, string>
+                var newData = new Dictionary<string, object>
                 {
-                    { "UserID", txtUserId.Text },
+                    { "UserID", Convert.ToInt32(txtUserId.Text) },
                     { "UserName", txtUsername.Text },
                     { "UserEmail", txtEmail.Text },
                     { "UserLevel", txtUserLevel.Text },
@@ -75,7 +73,7 @@ namespace WordMakerDashboard
 
                 try
                 {
-                    dbOperations.UpdateDatabaseEntry(updateQuery, newData);
+                    DatabaseService.UpdateDatabaseEntry(updateQuery, newData);
                     MessageBox.Show("Data altered successfully!");
                     ResetAllFields();
                 }
@@ -153,7 +151,7 @@ namespace WordMakerDashboard
 
         private void LoadDatabaseView()
         {
-            bindingSource.DataSource = dbOperations.SelectAllFromDatabase("tbUsers");
+            bindingSource.DataSource = DatabaseService.SelectAllFromDatabase("tbUsers");
             dgvDados.DataSource = bindingSource;
             dgvDados.Enabled = true;
         }

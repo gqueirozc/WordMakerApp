@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WordMakerDashboard.Models;
 using WordMakerDashboard.Services;
-using System.Linq;
-using System.Text.Json;
-using System.Collections;
+using WordMakerAPI.Services;
+
 
 namespace WordMakerAPI.Controllers
 {
@@ -11,96 +10,70 @@ namespace WordMakerAPI.Controllers
     [Route("[controller]")]
     public class WordMakerController : ControllerBase
     {
-        private DatabaseService dbOperations;
-
-        public WordMakerController()
-        {
-            dbOperations = new DatabaseService();
-        }
-
         [HttpGet("GetWords")]
-        public List<WordInfo> GetWords(int wordMaxLength, int numberOfEntries, string language)
+        public async Task<List<WordInfo>> GetWords(int wordMaxLength, int numberOfEntries, string language)
         {
-            var similarWords = new List<WordInfo>();
-            var attempts = 0;
-
-            while (similarWords.Count < numberOfEntries && attempts < numberOfEntries * 10)
+            var filteredWords = new List<WordInfo>();
+            while (filteredWords.Count < numberOfEntries)
             {
-                var word = DatabaseService.GetRandomWord(wordMaxLength, language);
-                var letters = DatabaseService.GetLetters(word);
+                var selectedWord = DatabaseService.GetRandomWord(wordMaxLength, language);
+               filteredWords.Add(selectedWord);
 
-                var additionalSimilarWords = DatabaseService.GetRandomWords(wordMaxLength, letters, numberOfEntries - similarWords.Count, language);
-                if (additionalSimilarWords.Count < numberOfEntries)
+                var selectedWordLetters = DatabaseService.SeparateLetters(selectedWord.Word);
+                var allWordsWithLength = DatabaseService.GetAllWordsByLength(wordMaxLength, language);
+
+                var additionalWords = FilterWords(allWordsWithLength, selectedWordLetters, numberOfEntries - filteredWords.Count, selectedWord);
+                filteredWords.AddRange(additionalWords);
+
+                foreach (var word in filteredWords)
                 {
-                    attempts++;
-                    continue;
+                    var wordToUpdate = await FillWordInfoService.TryUpdateWordInfo(word, language);
+                    if (wordToUpdate.Definition != null && wordToUpdate.Definition != null)
+                    {
+                        DatabaseService.WordExists(wordToUpdate.Word, language, out var wordId);
+                        
+                        var updateDictionary = new Dictionary<string, object>
+                        {
+                            { "WordId", wordId },
+                            { "Word", wordToUpdate.Word },
+                            { "WordDefinition", wordToUpdate.Definition ?? "NULL" },
+                            { "WordExample", wordToUpdate.Example ?? "NULL" },
+                            { "LanguageName", language },
+                        };
+
+                        string updateQuery = @"UPDATE tblWords
+                                               SET
+                                                   Word = @Word,
+                                                   WordDefinition = @WordDefinition,
+                                                   WordExample = @WordExample
+                                               WHERE WordId = @WordId
+                                               AND LanguageId = (SELECT LanguageId FROM tbLanguages WHERE LanguageName = @LanguageName);";
+
+                        DatabaseService.UpdateDatabaseEntry(updateQuery, updateDictionary);
+                    }
+                    else
+                    {
+                        var additionalWord = FilterWords(allWordsWithLength, selectedWordLetters, 1, wordToUpdate);
+                        filteredWords.Remove(word);
+                        filteredWords.AddRange(additionalWord);
+                        continue;
+                    }
                 }
-
-                similarWords.AddRange(additionalSimilarWords);
             }
-
-            //foreach (var entry in similarWords)
-            //{
-            //    var word = entry.Word;
-            //    var definition = entry.Definition;
-            //    var example = entry.Example;
-            //    if (definition == null)
-            //    {
-            //        var resp = await GetWordInfo("apple");
-            //    }
-            //}
-
-            return similarWords.Take(numberOfEntries).ToList();
+            
+            return filteredWords.ToList();
         }
 
-        //private static async Task<WordInfo> GetWordInfo(string word)
-        //{
-        //    WordInfo result = null;
+        private static List<WordInfo> FilterWords(List<WordInfo> wordInfoList, List<string> letterList, int amountToGet, WordInfo selectedWord)
+        {
+            var filteredList = wordInfoList
+                .Where(wordInfo => !wordInfo.Word.Equals(selectedWord.Word, StringComparison.OrdinalIgnoreCase) &&
+                                   DatabaseService.SeparateLetters(wordInfo.Word)
+                                   .All(letter => letterList.Contains(letter.ToLower())))
+                .Take(amountToGet)
+                .ToList();
 
-        //    try
-        //    {
-        //        var client = new HttpClient();
-        //        var definitionUrl = $"https://wordsapiv1.p.rapidapi.com/words/{word}/definitions";
-        //        var exampleUrl = $"https://wordsapiv1.p.rapidapi.com/words/{word}/examples";
-
-        //        var definitionRequest = new HttpRequestMessage
-        //        {
-        //            Method = HttpMethod.Get,
-        //            RequestUri = new Uri(definitionUrl),
-        //            Headers =
-        //        {
-        //            { "X-RapidAPI-Key", "d9ec980d4dmsh496fb76da9d64bdp1ec87ejsn2c437e356f9b" },
-        //            { "X-RapidAPI-Host", "wordsapiv1.p.rapidapi.com" }
-        //        }
-        //        };
-
-        //        var exampleRequest = new HttpRequestMessage
-        //        {
-        //            Method = HttpMethod.Get,
-        //            RequestUri = new Uri(exampleUrl),
-        //            Headers =
-        //            {
-        //                { "X-RapidAPI-Key", "d9ec980d4dmsh496fb76da9d64bdp1ec87ejsn2c437e356f9b" },
-        //                { "X-RapidAPI-Host", "wordsapiv1.p.rapidapi.com" }
-        //            }
-        //        };
-
-        //        var definitionResponse = await client.SendAsync(definitionRequest);
-        //        definitionResponse.EnsureSuccessStatusCode();
-        //        var definitionBody = await definitionResponse.Content.ReadAsStringAsync();
-
-        //        var exampleResponse = await client.SendAsync(exampleRequest);
-        //        exampleResponse.EnsureSuccessStatusCode();
-        //        var exampleBody = await exampleResponse.Content.ReadAsStringAsync();
-
-        //        var definitionJson = JsonDocument.Parse(definitionBody);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"An error occurred: {ex.Message}");
-        //    }
-
-        //    return result;
-        //}
+            return filteredList;
+        }
     }
 }

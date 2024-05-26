@@ -7,13 +7,11 @@ namespace WordMakerDashboard
 {
     public partial class frmRegisterUser : Form
     {
-        private readonly DatabaseService dbOperations;
         private readonly CryptographyService cryptographyService;
 
         public frmRegisterUser()
         {
             InitializeComponent();
-            dbOperations = new DatabaseService();
             cryptographyService = new CryptographyService();
         }
 
@@ -24,7 +22,7 @@ namespace WordMakerDashboard
 
             if (resp == DialogResult.Yes)
             {
-                var newData = new Dictionary<string, string>
+                var newData = new Dictionary<string, object>
                 {
                     { "UserName", txtUsername.Text },
                     { "UserPassword", cryptographyService.ConvertToMd5(txtPassword.Text) },
@@ -38,7 +36,7 @@ namespace WordMakerDashboard
                     VALUES (@UserName, @UserPassword, @UserEmail, @UserLevel, @UserPoints)";
                 try
                 {
-                    dbOperations.UpdateDatabaseEntry(updateQuery, newData);
+                    DatabaseService.UpdateDatabaseEntry(updateQuery, newData);
                     MessageBox.Show("User added successfully!");
                     ClearTextBoxes();
                 }

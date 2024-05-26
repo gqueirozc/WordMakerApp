@@ -8,13 +8,11 @@ namespace WordMakerDashboard
     public partial class frmAdminOperations : Form
     {
         private readonly BindingSource bindingSource;
-        private readonly DatabaseService dbOperations;
         private readonly CryptographyService cryptographyService;
 
         public frmAdminOperations()
         {
             InitializeComponent();
-            dbOperations = new DatabaseService();
             bindingSource = new BindingSource();
             cryptographyService = new CryptographyService();
             btnDelete.Visible = false;
@@ -40,7 +38,7 @@ namespace WordMakerDashboard
 
             if (resp == DialogResult.Yes)
             {
-                dbOperations.DeleteFromDatabaseTable("tbAdmins", "AdminID", Convert.ToInt32(txtAdminId.Text));
+                DatabaseService.DeleteFromDatabaseTable("tbAdmins", "AdminID", Convert.ToInt32(txtAdminId.Text));
             }
 
             MessageBox.Show("Entry deleted successfully!");
@@ -54,13 +52,13 @@ namespace WordMakerDashboard
 
             if (resp == DialogResult.Yes)
             {
-                var newData = new Dictionary<string, string>
+                var newData = new Dictionary<string, object>
                 {
-                    { "AdminID", txtAdminId.Text },
+                    { "AdminID", Convert.ToInt32(txtAdminId.Text) },
                     { "AdminFullName", txtFullName.Text },
                     { "AdminCorporateEmail", txtEmail.Text },
                     { "AdminPhoneNumber", txtPhone.Text },
-                    { "AdminPrivilegeLevel", dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[4].Value.ToString() },
+                    { "AdminPrivilegeLevel", Convert.ToInt32(dgvDados.Rows[dgvDados.CurrentRow.Index].Cells[4].Value.ToString()) },
                     { "AdminPassword", cryptographyService.ConvertToMd5(txtPassword.Text) },
                     { "AdminLogin", txtLogin.Text },
                 };
@@ -82,7 +80,7 @@ namespace WordMakerDashboard
 
                 try
                 {
-                    dbOperations.UpdateDatabaseEntry(updateQuery, newData);
+                    DatabaseService.UpdateDatabaseEntry(updateQuery, newData);
                     MessageBox.Show("Data altered successfully!");
                     ResetAllFields();
                 }
@@ -172,7 +170,7 @@ namespace WordMakerDashboard
 
         private void LoadDatabaseView()
         {
-            bindingSource.DataSource = dbOperations.SelectAllFromDatabase("tbAdmins");
+            bindingSource.DataSource = DatabaseService.SelectAllFromDatabase("tbAdmins");
             dgvDados.DataSource = bindingSource;
             dgvDados.Enabled = true;
         }

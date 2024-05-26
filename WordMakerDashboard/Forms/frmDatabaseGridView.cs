@@ -8,14 +8,12 @@ namespace WordMakerDashboard
     public partial class frmDatabaseGridView : Form
     {
         private readonly BindingSource bindingSource;
-        private readonly DatabaseService dbOperations;
         private readonly string TableName;
         private readonly bool IsDictionary;
 
         public frmDatabaseGridView(string tableName, bool isDictionary = false)
         {
             InitializeComponent();
-            dbOperations = new DatabaseService();
             bindingSource = new BindingSource();
             TableName = tableName;
             IsDictionary = isDictionary;
@@ -42,7 +40,7 @@ namespace WordMakerDashboard
 
         private void LoadDatabaseView(string query = "")
         {
-            bindingSource.DataSource = dbOperations.SelectAllFromDatabase(TableName, query);
+            bindingSource.DataSource = DatabaseService.SelectAllFromDatabase(TableName, query);
             dgvDisplay.DataSource = bindingSource;
 
             var i = 0;
@@ -89,7 +87,7 @@ namespace WordMakerDashboard
         private void PopulateComboBoxWithLanguages()
         {
             var selectString = $"SELECT LanguageName FROM tbLanguages";
-            var languagesTable = dbOperations.SelectAllFromDatabase("tbLanguages", selectString);
+            var languagesTable = DatabaseService.SelectAllFromDatabase("tbLanguages", selectString);
             if (languagesTable.Rows.Count > 0)
             {
                 foreach (DataRow row in languagesTable.Rows)
