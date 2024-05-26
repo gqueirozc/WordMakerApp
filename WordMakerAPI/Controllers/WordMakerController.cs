@@ -17,7 +17,7 @@ namespace WordMakerAPI.Controllers
             while (filteredWords.Count < numberOfEntries)
             {
                 var selectedWord = DatabaseService.GetRandomWord(wordMaxLength, language);
-               filteredWords.Add(selectedWord);
+                filteredWords.Add(selectedWord);
 
                 var selectedWordLetters = DatabaseService.SeparateLetters(selectedWord.Word);
                 var allWordsWithLength = DatabaseService.GetAllWordsByLength(wordMaxLength, language);

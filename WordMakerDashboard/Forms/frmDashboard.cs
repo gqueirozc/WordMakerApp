@@ -80,21 +80,21 @@ namespace WordMakerDashboard
         private void usersToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var form = new frmDatabaseGridView("tbUsers");
-            form.MdiParent = this.MdiParent;
+            form.MdiParent = this;
             form.Show();
         }
 
         private void administratorsToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             var form = new frmDatabaseGridView("tbAdmins");
-            form.MdiParent = this.MdiParent;
+            form.MdiParent = this;
             form.Show();
         }
 
         private void dictionariesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var form = new frmDatabaseGridView("tblWords", true);
-            form.MdiParent = this.MdiParent;
+            form.MdiParent = this;
             form.Show();
         }
     }
