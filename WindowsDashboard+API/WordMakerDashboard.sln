@@ -5,7 +5,7 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordMakerDashboard", "WordMakerDashboard\WordMakerDashboard.csproj", "{6452E2A5-3C75-4877-A9F3-562EB46C0441}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordMakerAPI", "WordMakerAPI\WordMakerAPI.csproj", "{13921B0E-451F-42C2-B85A-5509B3432895}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WordMakerAPI", "WordMakerAPI\WordMakerAPI.csproj", "{13921B0E-451F-42C2-B85A-5509B3432895}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
