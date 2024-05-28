@@ -8,7 +8,7 @@ This repository contains two different project solutions in two different folder
 
 - The first one is a 'Windows Form App' made with .NET Framework 4.7.2 that serves as a 'Dashboard' with CRUD commands and visualization that connects with a PostgreSQL database online. Its executable will also be in the folder.
 
-- The second solution is an API that fetches information from the database and updates it if necessary, this API is used for communication with the mobile application.
+- The second solution is a Web API made with .NET 6.0 that fetches information from the database and updates it if necessary, this API is used for communication with the mobile application.
 
 
 ## MobileApplication
