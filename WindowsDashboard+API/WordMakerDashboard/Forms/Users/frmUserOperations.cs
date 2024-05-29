@@ -38,7 +38,7 @@ namespace WordMakerDashboard
 
             if (resp == DialogResult.Yes)
             {
-                DatabaseService.DeleteFromDatabaseTable("clientUsers", "UserID", Convert.ToInt32(txtUserId.Text));
+                DatabaseService.DeleteFromDatabaseTable("tbUsers", "UserID", Convert.ToInt32(txtUserId.Text));
             }
 
             MessageBox.Show("Entry deleted successfully!");
