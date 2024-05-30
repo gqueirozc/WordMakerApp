@@ -12,7 +12,7 @@ This repository contains two different project solutions in two different folder
 
 
 ## MobileApplication
- In this folder there will be a Dart/Flutter solution for the mobile application that connects with the API from the desktop app.
+ In this folder there will be a Dart/Flutter solution for the mobile application that needs to use the API from the desktop app so it can communicate and work as expected. In this folder is the .apk installer for the app, and a video demonstration of it working.
 
 
 
